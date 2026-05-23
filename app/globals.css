@@ -242,7 +242,7 @@ body.locked { overflow: hidden; }
 .product-card-media {
   position: relative;
   aspect-ratio: 4 / 5;
-  background: var(--bg-sunken);
+  background: #fff;
   overflow: hidden;
 }
 .product-card-media .quick-add {
@@ -347,6 +347,13 @@ body.mobile-preview .editorial-split-text { padding: 40px 20px !important; }
 /* Next.js overrides */
 * { box-sizing: border-box; }
 a { cursor: pointer; }
+
+/* Category tile + brand tile hover */
+.category-tile { transition: transform .35s ease; }
+.category-tile:hover { transform: scale(1.015); }
+
+.brand-tile { transition: background .15s ease, color .15s ease, transform .2s ease; }
+.brand-tile:hover { background: var(--ink) !important; color: white !important; }
 
 /* Mobile responsive */
 @media (max-width: 900px) {

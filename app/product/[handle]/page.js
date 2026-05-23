@@ -1,4 +1,4 @@
-import { getProduct, getProducts, normalizeProduct, BRAND_COLLECTIONS } from '@/lib/shopify';
+import { getProduct, getProductsByCollection, normalizeProduct, BRAND_COLLECTIONS } from '@/lib/shopify';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import PDPClient from './PDPClient';
@@ -11,12 +11,6 @@ export async function generateMetadata({ params }) {
   return { title: `${product.title} — SkinShopper`, description: product.description?.slice(0, 155) };
 }
 
-function vendorToHandle(vendor) {
-  if (!vendor) return null;
-  const match = BRAND_COLLECTIONS.find((b) => b.name.toLowerCase() === vendor.toLowerCase());
-  return match?.handle ?? vendor.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
-
 export default async function ProductPage({ params }) {
   const raw = await getProduct(params.handle).catch(() => null);
   if (!raw) notFound();
@@ -26,21 +20,19 @@ export default async function ProductPage({ params }) {
   const allImages = images.length > 0 ? images : (product.image ? [{ url: product.image, altText: product.title }] : []);
   const variants = raw.variants?.edges?.map((e) => e.node) ?? [];
 
-  const brandHandle = vendorToHandle(product.vendor);
+  const brandHandle = product.brandHandle;
+  const brandMeta = BRAND_COLLECTIONS.find((b) => b.handle === brandHandle);
+  const categoryHandle = brandMeta?.category === 'parfum' ? 'parfum' : 'huidverzorging';
 
-  const categoryHandle = BRAND_COLLECTIONS.find(
-    (b) => b.handle === brandHandle
-  )?.category === 'parfum' ? 'parfum' : 'huidverzorging';
-
-  // Fetch related products from the same vendor
-  const relatedProducts = await getProducts(8, `vendor:"${product.vendor}"`)
-    .then((prods) =>
-      prods
-        .filter((p) => p.handle !== params.handle)
-        .map(normalizeProduct)
-        .slice(0, 4)
-    )
-    .catch(() => []);
+  // Related products from the same brand collection (excluding current product)
+  let relatedProducts = [];
+  if (brandHandle) {
+    const col = await getProductsByCollection(brandHandle, 12).catch(() => null);
+    relatedProducts = (col?.products?.edges?.map((e) => e.node) ?? [])
+      .filter((p) => p.handle !== params.handle)
+      .map(normalizeProduct)
+      .slice(0, 4);
+  }
 
   return (
     <div>

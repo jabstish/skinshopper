@@ -15,9 +15,27 @@ const REVIEWS = [
   { name: 'Anouk de B.', rating: 4, text: 'Goede deal op Vichy Mineral 89. Mijn moeder gebruikt hetzelfde dus we bestellen samen — gratis verzending was meegenomen.', product: 'Vichy Minéral 89', days: '1 week geleden' },
 ];
 
+async function getCategoryImage(handle) {
+  const col = await getProductsByCollection(handle, 1).catch(() => null);
+  return col?.products?.edges?.[0]?.node?.featuredImage?.url ?? null;
+}
+
 export default async function HomePage() {
-  const col = await getProductsByCollection('frontpage', 8).catch(() => null);
-  const products = (col?.products?.edges?.map((e) => normalizeProduct(e.node)) ?? []).slice(0, 8);
+  const [frontpage, parfumImg, skincareImg, sunImg, saleImg] = await Promise.all([
+    getProductsByCollection('frontpage', 8).catch(() => null),
+    getCategoryImage('parfum'),
+    getCategoryImage('la-roche-posay'),
+    getCategoryImage('zonnebrand-creme'),
+    getCategoryImage('skinceuticals'),
+  ]);
+
+  const products = (frontpage?.products?.edges?.map((e) => normalizeProduct(e.node)) ?? []).slice(0, 8);
+  const categoryImages = {
+    parfum: parfumImg,
+    'la-roche-posay': skincareImg,
+    'zonnebrand-creme': sunImg,
+    sale: saleImg,
+  };
 
   return (
     <>
@@ -70,7 +88,7 @@ export default async function HomePage() {
             </div>
             <Link href="/shop/huidverzorging" style={{ fontSize: 13, textDecoration: 'underline', textUnderlineOffset: 4 }}>Alle categorieën →</Link>
           </div>
-          <CategoryTiles />
+          <CategoryTiles images={categoryImages} />
         </div>
       </section>
 
@@ -95,7 +113,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Editorial split — La Roche-Posay feature */}
+      {/* Editorial split */}
       <EditorialSplit />
 
       <BrandsStrip />

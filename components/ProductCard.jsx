@@ -23,7 +23,7 @@ export default function ProductCard({ product }) {
               style={{ objectFit: 'contain', padding: 16 }}
             />
           ) : (
-            <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', background: 'var(--bg-sunken)' }}>
+            <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', background: '#fff' }}>
               <span style={{ fontSize: 32, opacity: 0.3 }}>🧴</span>
             </div>
           )}

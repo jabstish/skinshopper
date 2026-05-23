@@ -3,11 +3,43 @@ import { useState, useMemo } from 'react';
 import ProductCard from '@/components/ProductCard';
 import { formatPrice } from '@/lib/shopify';
 
+const SCENT_FAMILIES = {
+  'Fris': ['fresh', 'aqua', 'sea', 'blue', 'water', 'crystalle', 'ck one', 'ck everyone', 'in motion'],
+  'Houtig': ['sandalwood', 'sandelhout', 'cedar', 'vetiver', 'wood', 'sandalwood'],
+  'Oriëntaals': ['oriental', 'amber', 'oud', 'spice', 'spicy', 'intense', 'noir', 'night'],
+  'Bloemig': ['flower', 'rose', 'jasmine', 'iris', 'lily', 'eternity', 'euphoria', 'flowery', 'flora', 'bloom'],
+  'Kruidig': ['herb', 'sage', 'lavendel', 'lavender'],
+  'Citrus': ['citrus', 'bergamot', 'lemon', 'orange', 'mandarin', 'lime', 'grapefruit'],
+  'Fruitig': ['fruit', 'apple', 'pear', 'peach', 'berry'],
+  'Aromatisch': ['aromatic', 'aroma'],
+};
+
+const SKIN_CONCERNS = {
+  'Anti-aging': ['anti-age', 'retinol', 'lifting', 'liftactiv', 'neovadiol', 'hyalu', 'collagen', 'anti-rimpel', 'rimpel', 'firming'],
+  'Acne / Onzuiver': ['acne', 'effaclar', 'blemish', 'onzuiver', 'spot'],
+  'Hydratatie': ['hyaluron', 'hydra', 'moistur', 'mineral 89', 'aquatonic', 'b5'],
+  'Pigmentvlekken': ['dark spot', 'pigment', 'vitamine c', 'vitamin c', 'c+', 'ce ferulic', 'phloretin', 'brightening'],
+  'Gevoelige huid': ['gevoelig', 'sensitive', 'kalmer', 'soothing', 'calming', 'rosaliac', 'toleriane', 'cicaplast'],
+  'Doffe huid': ['dull', 'glow', 'radiance', 'shine'],
+  'Zonbescherming': ['spf', 'sun beauty', 'sunscreen', 'uv'],
+  'Droge huid': ['droog', 'nutritic', 'nourish', ' rich'],
+};
+
+function matchesKeywords(text, keywords) {
+  const t = text.toLowerCase();
+  return keywords.some((k) => t.includes(k.toLowerCase()));
+}
+
 export default function PLPClient({ category, title, sub, initialProducts }) {
   const [sort, setSort] = useState('relevance');
   const [onSaleOnly, setOnSaleOnly] = useState(false);
   const [maxPrice, setMaxPrice] = useState(200);
   const [brands, setBrands] = useState([]);
+  const [scents, setScents] = useState([]);
+  const [concerns, setConcerns] = useState([]);
+
+  const showScents = category === 'parfum';
+  const showConcerns = category === 'huidverzorging' || category === 'zonbescherming';
 
   const availableBrands = useMemo(() => {
     const map = {};
@@ -20,18 +52,29 @@ export default function PLPClient({ category, title, sub, initialProducts }) {
       if (onSaleOnly && !p.onSale) return false;
       if (p.price > maxPrice) return false;
       if (brands.length && !brands.includes(p.vendor)) return false;
+      if (scents.length) {
+        const matchScent = scents.some((s) => matchesKeywords(p.title, SCENT_FAMILIES[s] ?? []));
+        if (!matchScent) return false;
+      }
+      if (concerns.length) {
+        const matchConcern = concerns.some((c) => matchesKeywords(p.title, SKIN_CONCERNS[c] ?? []));
+        if (!matchConcern) return false;
+      }
       return true;
     });
     if (sort === 'price-asc') list = [...list].sort((a, b) => a.price - b.price);
     else if (sort === 'price-desc') list = [...list].sort((a, b) => b.price - a.price);
     else if (sort === 'sale') list = [...list].sort((a, b) => (b.savings ?? 0) - (a.savings ?? 0));
-    else if (sort === 'rating') list = [...list].sort(() => Math.random() - 0.5);
     return list;
-  }, [initialProducts, sort, onSaleOnly, maxPrice, brands]);
+  }, [initialProducts, sort, onSaleOnly, maxPrice, brands, scents, concerns]);
 
-  const toggleBrand = (name) => setBrands((prev) => prev.includes(name) ? prev.filter((b) => b !== name) : [...prev, name]);
-  const activeFilters = (onSaleOnly ? 1 : 0) + (maxPrice < 200 ? 1 : 0) + brands.length;
-  const clearAll = () => { setOnSaleOnly(false); setMaxPrice(200); setBrands([]); };
+  const toggle = (setter) => (value) => setter((prev) => (prev.includes(value) ? prev.filter((b) => b !== value) : [...prev, value]));
+  const toggleBrand = toggle(setBrands);
+  const toggleScent = toggle(setScents);
+  const toggleConcern = toggle(setConcerns);
+
+  const activeFilters = (onSaleOnly ? 1 : 0) + (maxPrice < 200 ? 1 : 0) + brands.length + scents.length + concerns.length;
+  const clearAll = () => { setOnSaleOnly(false); setMaxPrice(200); setBrands([]); setScents([]); setConcerns([]); };
 
   return (
     <div>
@@ -58,12 +101,10 @@ export default function PLPClient({ category, title, sub, initialProducts }) {
               {activeFilters > 0 && <button onClick={clearAll} style={{ background: 'none', border: 0, fontSize: 11, textDecoration: 'underline', cursor: 'pointer', color: 'var(--ink-3)' }}>Wis alles</button>}
             </div>
 
-            {/* Beschikbaarheid */}
             <FilterGroup title="Beschikbaarheid">
               <CheckRow checked={onSaleOnly} onChange={() => setOnSaleOnly((v) => !v)} label="In de uitverkoop" highlight />
             </FilterGroup>
 
-            {/* Prijs */}
             <FilterGroup title="Prijs">
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 8 }}>
                 <span>€0</span>
@@ -74,17 +115,31 @@ export default function PLPClient({ category, title, sub, initialProducts }) {
                 style={{ width: '100%', accentColor: 'var(--ink)' }} />
             </FilterGroup>
 
-            {/* Merk */}
             <FilterGroup title="Merk">
               {availableBrands.map((b) => (
                 <CheckRow key={b.name} checked={brands.includes(b.name)} onChange={() => toggleBrand(b.name)} label={b.name} count={b.count} />
               ))}
             </FilterGroup>
+
+            {showScents && (
+              <FilterGroup title="Geurfamilie">
+                {Object.keys(SCENT_FAMILIES).map((s) => (
+                  <CheckRow key={s} checked={scents.includes(s)} onChange={() => toggleScent(s)} label={s} />
+                ))}
+              </FilterGroup>
+            )}
+
+            {showConcerns && (
+              <FilterGroup title="Huidprobleem">
+                {Object.keys(SKIN_CONCERNS).map((c) => (
+                  <CheckRow key={c} checked={concerns.includes(c)} onChange={() => toggleConcern(c)} label={c} />
+                ))}
+              </FilterGroup>
+            )}
           </aside>
 
           {/* Grid */}
           <section>
-            {/* Toolbar */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid var(--border)', paddingBottom: 16 }}>
               <div style={{ fontSize: 13, color: 'var(--ink-3)' }}>
                 <strong style={{ color: 'var(--ink)' }}>{filtered.length}</strong> producten
@@ -98,19 +153,21 @@ export default function PLPClient({ category, title, sub, initialProducts }) {
               </select>
             </div>
 
-            {/* Active filter chips */}
             {activeFilters > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
                 {onSaleOnly && <Chip label="In de uitverkoop" onRemove={() => setOnSaleOnly(false)} />}
                 {maxPrice < 200 && <Chip label={`Tot ${formatPrice(maxPrice)}`} onRemove={() => setMaxPrice(200)} />}
                 {brands.map((b) => <Chip key={b} label={b} onRemove={() => toggleBrand(b)} />)}
+                {scents.map((s) => <Chip key={s} label={s} onRemove={() => toggleScent(s)} />)}
+                {concerns.map((c) => <Chip key={c} label={c} onRemove={() => toggleConcern(c)} />)}
               </div>
             )}
 
             {filtered.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '80px 32px', background: 'var(--bg-elev)' }}>
                 <div style={{ fontFamily: 'var(--font-display)', fontSize: 32, marginBottom: 8 }}>Geen producten gevonden</div>
-                <button className="btn" onClick={clearAll} style={{ marginTop: 16 }}>Wis filters</button>
+                <p style={{ color: 'var(--ink-3)', fontSize: 14, marginBottom: 16 }}>Probeer minder filters.</p>
+                <button className="btn" onClick={clearAll}>Wis filters</button>
               </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 28, rowGap: 48 }}>

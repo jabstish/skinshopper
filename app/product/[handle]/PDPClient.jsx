@@ -108,7 +108,7 @@ export default function PDPClient({ product, allImages, variants, description, b
 
           {/* Gallery */}
           <div>
-            <div style={{ position: 'relative', aspectRatio: '4/5', background: 'var(--bg-sunken)', marginBottom: 12 }}>
+            <div style={{ position: 'relative', aspectRatio: '4/5', background: '#fff', marginBottom: 12 }}>
               {allImages[activeImg] ? (
                 <Image
                   src={allImages[activeImg].url}
@@ -143,8 +143,9 @@ export default function PDPClient({ product, allImages, variants, description, b
                     style={{
                       flex: 1, aspectRatio: '1',
                       position: 'relative',
-                      background: 'var(--bg-sunken)',
+                      background: '#fff',
                       border: activeImg === i ? '2px solid var(--ink)' : '1px solid var(--border)',
+                      boxShadow: '0 2px 8px 0 rgba(0,0,0,0.04)',
                       padding: 0, cursor: 'pointer',
                       transition: 'border-color .15s ease',
                     }}
