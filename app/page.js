@@ -1,9 +1,11 @@
 import Link from 'next/link';
-import { getProductsByCollection, getProducts, normalizeProduct } from '@/lib/shopify';
+import { getProductsByCollection, normalizeProduct } from '@/lib/shopify';
 import ProductCard from '@/components/ProductCard';
 import NewsletterSection from '@/components/NewsletterSection';
 import CategoryTiles from '@/components/CategoryTiles';
 import BrandsStrip from '@/components/BrandsStrip';
+import SkinConcernFinder from '@/components/SkinConcernFinder';
+import EditorialSplit from '@/components/EditorialSplit';
 
 export const revalidate = 120;
 
@@ -14,15 +16,8 @@ const REVIEWS = [
 ];
 
 export default async function HomePage() {
-  // Fetch featured + bestsellers in parallel
-  const [featuredCollection, allBestsellers] = await Promise.all([
-    getProductsByCollection('frontpage', 8).catch(() => null),
-    getProducts(12, 'tag:bestseller').catch(() => []),
-  ]);
-
-  const featured = (featuredCollection?.products?.edges?.map((e) => normalizeProduct(e.node)) ?? []).slice(0, 8);
-  const bestsellers = (allBestsellers ?? []).map(normalizeProduct).slice(0, 8);
-  const showProducts = bestsellers.length > 0 ? bestsellers : featured;
+  const col = await getProductsByCollection('frontpage', 8).catch(() => null);
+  const products = (col?.products?.edges?.map((e) => normalizeProduct(e.node)) ?? []).slice(0, 8);
 
   return (
     <>
@@ -73,14 +68,18 @@ export default async function HomePage() {
               <div className="eyebrow" style={{ marginBottom: 12 }}>Shop per categorie</div>
               <h2>Ontdek alles wat we doen</h2>
             </div>
+            <Link href="/shop/huidverzorging" style={{ fontSize: 13, textDecoration: 'underline', textUnderlineOffset: 4 }}>Alle categorieën →</Link>
           </div>
           <CategoryTiles />
         </div>
       </section>
 
+      {/* Skin concern finder */}
+      <SkinConcernFinder />
+
       {/* Bestsellers */}
-      {showProducts.length > 0 && (
-        <section className="section" style={{ paddingTop: 0 }}>
+      {products.length > 0 && (
+        <section className="section">
           <div className="container-wide">
             <div className="section-head" style={{ marginBottom: 32 }}>
               <div>
@@ -90,11 +89,14 @@ export default async function HomePage() {
               <Link href="/shop/huidverzorging" style={{ fontSize: 13, textDecoration: 'underline', textUnderlineOffset: 4 }}>Bekijk alles →</Link>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28 }}>
-              {showProducts.map((p) => <ProductCard key={p.id} product={p} />)}
+              {products.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           </div>
         </section>
       )}
+
+      {/* Editorial split — La Roche-Posay feature */}
+      <EditorialSplit />
 
       <BrandsStrip />
 

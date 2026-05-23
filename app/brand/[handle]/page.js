@@ -1,13 +1,76 @@
 import { getProductsByCollection, normalizeProduct, BRAND_COLLECTIONS } from '@/lib/shopify';
 import { notFound } from 'next/navigation';
-import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
+import BrandClient from './BrandClient';
 
 export const revalidate = 120;
 
+const BRAND_DATA = {
+  'la-roche-posay': {
+    tagline: 'Aanbevolen door dermatologen',
+    since: 'Sinds 1975',
+    country: 'Frankrijk',
+    desc: 'La Roche-Posay ontwikkelt huidverzorging in samenwerking met dermatologen wereldwijd. Hun thermaal water vormt de basis van elk product — klinisch getest, bewezen effectief.',
+    story: 'Elk product dat La Roche-Posay lanceert doorloopt jaren van klinisch onderzoek. De samenwerking met meer dan 25.000 dermatologen wereldwijd maakt het merk tot de meest aanbevolen huidverzorgingslijn ter wereld.',
+    heroBg: 'linear-gradient(135deg, #f4f9fc 0%, #dceaf3 60%, #b3d4e8 100%)',
+  },
+  'vichy': {
+    tagline: 'Mineralen die de huid voeden',
+    since: 'Sinds 1931',
+    country: 'Frankrijk',
+    desc: 'Vichy combineert vulkanische mineralen uit de bronnen van Vichy met moderne dermatologie. Bekend om Mineral 89 en de Neovadiol-lijn voor de huid na de menopauze.',
+    story: 'De bronnen van Vichy leveren mineraalwater met een unieke samenstelling van 15 mineralen en spoorelementen. Dit water vormt de basis van alle Vichy producten — direct van de bron naar jouw huid.',
+    heroBg: 'linear-gradient(135deg, #f0f8fc 0%, #c2e0e8 60%, #7fb8c4 100%)',
+  },
+  'skinceuticals': {
+    tagline: 'Klinische skincare, bewezen formules',
+    since: 'Sinds 1997',
+    country: 'Verenigde Staten',
+    desc: 'Door dermatologen ontwikkelde antioxidant serums en actieve formules. Hoog-geconcentreerd en bewezen via klinische studies — het merk dat professionals vertrouwen.',
+    story: 'SkinCeuticals werd opgericht op basis van één baanbrekende ontdekking: de optimale combinatie van vitaminen voor maximale antioxidant bescherming. Vandaag worden de formules wereldwijd gebruikt in medische klinieken.',
+    heroBg: 'linear-gradient(135deg, #f4f4f0 0%, #d8d2c2 60%, #8a7f6b 100%)',
+  },
+  'hugo-boss': {
+    tagline: 'Vakmanschap in geur',
+    since: 'Sinds 1985 (parfums)',
+    country: 'Duitsland',
+    desc: 'De Hugo Boss parfumcollectie staat voor moderne mannelijkheid en tijdloze elegantie — van BOSS Bottled tot The Scent.',
+    story: 'Van het iconische BOSS Bottled tot de moderne The Scent-lijn — Hugo Boss parfums vertellen het verhaal van de zelfverzekerde man. Elke geur is een compositie van de fijnste ingrediënten, vakkundig samengesteld door de beste parfumeurs ter wereld.',
+    heroBg: 'linear-gradient(135deg, #f7f3ee 0%, #e3d4c0 60%, #4a3f35 100%)',
+  },
+  'calvin-klein': {
+    tagline: 'Minimalisme als signature',
+    since: 'Sinds 1968',
+    country: 'Verenigde Staten',
+    desc: 'Iconische parfums die de tijdgeest vangen — van CK One tot Eternity. Pure, herkenbare composities die decennialang relevant blijven.',
+    story: 'Calvin Klein redefinieert parfumkunst als een statement van vrijheid en individualiteit. CK One werd het eerste unisex parfum dat een generatie definieerde. Die geest van vrijheid en minimalisme ademt in elke nieuwe geur.',
+    heroBg: 'linear-gradient(135deg, #f5f5f5 0%, #d4d4d4 60%, #555555 100%)',
+  },
+  'lancaster': {
+    tagline: 'Pionier in zonbescherming',
+    since: 'Sinds 1946',
+    country: 'Monaco',
+    desc: 'Lancaster is de uitvinder van de moderne aftersun en pionier in geavanceerde zonbeschermingstechnologie. Geboren aan de Côte d\'Azur.',
+    story: 'Opgericht in Monaco in 1946, combineert Lancaster de glamour van de Rivièra met wetenschappelijke innovatie in zonbescherming. Van de eerste aftersun-formule tot de huidige Total Tan-technologie — Lancaster definieert elk decennium opnieuw.',
+    heroBg: 'linear-gradient(135deg, #fff4e8 0%, #fcd5a0 60%, #ee6c1d 100%)',
+  },
+  'gucci': {
+    tagline: 'Luxe in elke noot',
+    since: 'Sinds 1921',
+    country: 'Italië',
+    desc: 'Gucci parfums zijn de geur van Italiaanse luxe — rijke composities die klassieke parfumtradities combineren met het onmiskenbare huis-DNA.',
+    story: 'Gucci heeft de kunst van het parfumeren altijd benaderd als het verlengstuk van mode. Elke geur vertelt een verhaal over Italiaanse ambacht, weelderige materialen en de tijdloze stijl die het huis definieerde.',
+    heroBg: 'linear-gradient(135deg, #f9f3ec 0%, #d4bc9a 60%, #6b4a2a 100%)',
+  },
+};
+
 export async function generateMetadata({ params }) {
   const brand = BRAND_COLLECTIONS.find((b) => b.handle === params.handle);
-  return { title: `${brand?.name ?? 'Merk'} — SkinShopper` };
+  if (!brand) return { title: 'Merk — SkinShopper' };
+  return {
+    title: `${brand.name} — SkinShopper`,
+    description: BRAND_DATA[params.handle]?.desc?.slice(0, 155),
+  };
 }
 
 export default async function BrandPage({ params }) {
@@ -15,40 +78,141 @@ export default async function BrandPage({ params }) {
   if (!brand) notFound();
 
   const col = await getProductsByCollection(params.handle, 100).catch(() => null);
-  const products = (col?.products?.edges?.map((e) => normalizeProduct(e.node)) ?? []);
+  const products = col?.products?.edges?.map((e) => normalizeProduct(e.node)) ?? [];
+
+  const data = BRAND_DATA[params.handle] ?? {
+    tagline: brand.name,
+    since: '—',
+    country: '—',
+    desc: `Ontdek het volledige ${brand.name} assortiment — allemaal 100% origineel.`,
+    story: `Bij SkinShopper voeren we het volledige ${brand.name} assortiment direct van de officiële distributeur — gegarandeerd authentiek.`,
+    heroBg: 'linear-gradient(135deg, #f7f3ee 0%, #e3d4c0 60%, #8b6f47 100%)',
+  };
+
+  const categoryHandle = brand.category === 'parfum' ? 'parfum' : 'huidverzorging';
 
   return (
     <div>
       {/* Brand hero */}
-      <section style={{ background: 'var(--bg-sunken)', padding: '64px 0' }}>
-        <div className="container-wide">
-          <div style={{ fontSize: 12, color: 'var(--ink-3)', marginBottom: 24, display: 'flex', gap: 8 }}>
+      <section style={{ background: data.heroBg, position: 'relative', overflow: 'hidden' }}>
+        <div className="container-wide" style={{ padding: '80px 32px 100px', position: 'relative', zIndex: 2 }}>
+          {/* Breadcrumb */}
+          <div style={{ display: 'flex', gap: 8, fontSize: 12, color: 'var(--ink-3)', marginBottom: 32 }}>
             <Link href="/" style={{ color: 'var(--ink-3)' }}>Home</Link>
             <span>/</span>
-            <span>Merken</span>
+            <Link href={`/shop/${categoryHandle}`} style={{ color: 'var(--ink-3)' }}>
+              {brand.category === 'parfum' ? 'Parfum' : 'Huidverzorging'}
+            </Link>
             <span>/</span>
-            <span>{brand.name}</span>
+            <span style={{ color: 'var(--ink)' }}>{brand.name}</span>
           </div>
-          <h1 style={{ fontSize: 'clamp(48px, 6vw, 80px)', lineHeight: 0.95, marginBottom: 16, fontFamily: 'var(--font-body)', fontWeight: 900, letterSpacing: '0.02em' }}>
-            {brand.wordmark}
-          </h1>
-          <p style={{ color: 'var(--ink-3)', fontSize: 16 }}>
-            {products.length} producten · Allemaal 100% origineel
-          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 64, alignItems: 'end' }}>
+            <div>
+              <div className="eyebrow" style={{ marginBottom: 16 }}>Shop het volledige merk</div>
+              <h1 style={{
+                fontSize: 'clamp(56px, 9vw, 140px)',
+                lineHeight: 0.9,
+                fontFamily: 'var(--font-body)',
+                fontWeight: 800,
+                letterSpacing: '-0.02em',
+                marginBottom: 24,
+              }}>
+                {brand.wordmark}
+              </h1>
+              <p style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 24,
+                lineHeight: 1.2,
+                fontStyle: 'italic',
+                maxWidth: 520,
+                marginBottom: 20,
+                color: 'var(--ink-2)',
+              }}>
+                "{data.tagline}"
+              </p>
+              <p style={{ color: 'var(--ink-2)', fontSize: 15, lineHeight: 1.6, maxWidth: 540, marginBottom: 32 }}>
+                {data.desc}
+              </p>
+              <div style={{ display: 'flex', gap: 32, fontSize: 12, color: 'var(--ink-3)', flexWrap: 'wrap' }}>
+                <div className="eyebrow">{data.since}</div>
+                <div style={{ width: 1, height: 16, background: 'var(--border-strong)', alignSelf: 'center' }} />
+                <div className="eyebrow">{data.country}</div>
+                <div style={{ width: 1, height: 16, background: 'var(--border-strong)', alignSelf: 'center' }} />
+                <div className="eyebrow">{products.length} producten</div>
+              </div>
+            </div>
+
+            {/* Decorative box — placeholder for product imagery */}
+            <div style={{ aspectRatio: '4/5', maxHeight: 480, background: 'rgba(255,255,255,0.25)', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ textAlign: 'center', padding: 32 }}>
+                <div style={{ fontFamily: 'var(--font-body)', fontWeight: 800, fontSize: 'clamp(20px, 3vw, 36px)', letterSpacing: '-0.01em', opacity: 0.5 }}>
+                  {brand.wordmark}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <div className="container-wide" style={{ padding: '48px 32px 100px' }}>
-        {products.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '80px 0' }}>
-            <p style={{ color: 'var(--ink-3)' }}>Geen producten gevonden voor dit merk.</p>
+      {/* Brand stats bar */}
+      <section style={{ background: 'var(--bg-elev)', padding: '24px 0', borderBottom: '1px solid var(--border)' }}>
+        <div className="container-wide">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 32 }}>
+            {[
+              { icon: '✦', title: '100% origineel', sub: 'Direct van leverancier' },
+              { icon: '★', title: '4.8 sterren', sub: 'Op basis van 1.200+ reviews' },
+              { icon: '%', title: 'Tot 35% korting', sub: 'Vergeleken met adviesprijs' },
+              { icon: '☑', title: 'Snelle levering', sub: 'Vandaag besteld, morgen in huis' },
+            ].map((item) => (
+              <div key={item.title} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                <span style={{ fontSize: 20, color: 'var(--accent-deep)', lineHeight: 1.2 }}>{item.icon}</span>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 500 }}>{item.title}</div>
+                  <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 2 }}>{item.sub}</div>
+                </div>
+              </div>
+            ))}
           </div>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28, rowGap: 48 }}>
-            {products.map((p) => <ProductCard key={p.id} product={p} />)}
+        </div>
+      </section>
+
+      {/* Product grid */}
+      <BrandClient
+        products={products}
+        brandHandle={params.handle}
+        brandName={brand.name}
+        category={brand.category}
+      />
+
+      {/* Brand story split */}
+      <section style={{ background: 'var(--bg-sunken)', padding: '80px 0' }}>
+        <div className="container-wide" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
+          <div>
+            <div className="eyebrow" style={{ marginBottom: 16 }}>Het verhaal achter {brand.name}</div>
+            <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', marginBottom: 20 }}>
+              <em style={{ fontStyle: 'italic' }}>{data.tagline}.</em>
+            </h2>
+            <p style={{ color: 'var(--ink-3)', fontSize: 16, lineHeight: 1.7, marginBottom: 16 }}>{data.story}</p>
+            <p style={{ color: 'var(--ink-3)', fontSize: 16, lineHeight: 1.7, marginBottom: 32 }}>
+              Bij SkinShopper voeren we het volledige {brand.name} assortiment direct van de officiële distributeur — gegarandeerd authentiek, met BTW-bonnen.
+            </p>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <Link href={`/shop/${categoryHandle}`} className="btn">
+                Alle {brand.category === 'parfum' ? 'parfums' : 'huidverzorging'}
+              </Link>
+            </div>
           </div>
-        )}
-      </div>
+          <div style={{ aspectRatio: '1/1.1', background: data.heroBg, position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ textAlign: 'center', padding: 40, position: 'relative', zIndex: 2 }}>
+              <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.5, marginBottom: 12 }}>Editorial · {brand.name}</div>
+              <div style={{ fontFamily: 'var(--font-body)', fontWeight: 800, fontSize: 'clamp(18px, 3vw, 28px)', letterSpacing: '-0.01em', opacity: 0.4 }}>
+                {brand.wordmark}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
