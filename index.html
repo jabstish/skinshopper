@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkinShopper — Parfum & Huidverzorging</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .hide-mobile { display: inline-flex; }
+    .mobile-menu-btn { display: none; }
+    .desktop-nav { display: block; }
+
+    /* PLP filter drawer — default desktop = inline sidebar */
+    .plp-filters-wrap { display: contents; }
+    .plp-filters-backdrop { display: none; }
+    .plp-filter-trigger { display: none !important; }
+    .plp-filters-mobile-head,
+    .plp-filters-mobile-foot { display: none; }
+
+    /* Activate PLP mobile-layout: applied via class to html element by JS */
+    .is-mobile .plp-filters-wrap,
+    body.mobile-preview .plp-filters-wrap { display: block; position: fixed; inset: 0; z-index: 100; pointer-events: none; }
+    .is-mobile .plp-filters-wrap.open,
+    body.mobile-preview .plp-filters-wrap.open { pointer-events: auto; }
+    .is-mobile .plp-filters-backdrop,
+    body.mobile-preview .plp-filters-backdrop { display: block; position: absolute; inset: 0; background: rgba(14,14,14,0.45); opacity: 0; transition: opacity .3s ease; }
+    .is-mobile .plp-filters-wrap.open .plp-filters-backdrop,
+    body.mobile-preview .plp-filters-wrap.open .plp-filters-backdrop { opacity: 1; }
+    .is-mobile .plp-filters,
+    body.mobile-preview .plp-filters {
+      position: absolute !important;
+      bottom: 0; left: 0; right: 0; top: auto !important;
+      max-height: 88vh !important;
+      background: var(--bg);
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.18);
+      transform: translateY(100%);
+      transition: transform .35s cubic-bezier(.5,.1,.2,1);
+      padding: 0 20px 0;
+      overflow-y: auto;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+    .is-mobile .plp-filters-wrap.open .plp-filters,
+    body.mobile-preview .plp-filters-wrap.open .plp-filters { transform: translateY(0); }
+    .is-mobile .plp-filters-mobile-head,
+    body.mobile-preview .plp-filters-mobile-head {
+      display: flex !important;
+      position: sticky; top: 0;
+      background: var(--bg);
+      padding: 16px 0 12px;
+      border-bottom: 1px solid var(--border);
+      justify-content: space-between; align-items: center;
+      z-index: 2;
+      margin: 0 0 12px;
+    }
+    .is-mobile .plp-filters-mobile-foot,
+    body.mobile-preview .plp-filters-mobile-foot {
+      display: flex !important;
+      position: sticky; bottom: 0;
+      background: var(--bg);
+      padding: 16px 0;
+      border-top: 1px solid var(--border);
+      gap: 8px;
+      margin-top: 16px;
+      z-index: 2;
+    }
+    .is-mobile .plp-filter-trigger,
+    body.mobile-preview .plp-filter-trigger { display: inline-flex !important; }
+    .is-mobile .plp-filters::before,
+    body.mobile-preview .plp-filters::before {
+      content: ''; display: block;
+      width: 40px; height: 4px;
+      background: var(--border-strong); border-radius: 2px;
+      margin: 8px auto 0;
+    }
+
+    @media (max-width: 900px) {
+      :root { --pad-x: 20px; }
+      .hide-mobile { display: none !important; }
+      .mobile-menu-btn { display: inline-flex !important; }
+      .desktop-nav { display: none !important; }
+      .plp-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+      [style*="grid-template-columns: 1.15fr"],
+      [style*="grid-template-columns: 1.1fr"],
+      [style*="grid-template-columns: 1.4fr"],
+      [style*="grid-template-columns: 1fr 2fr"],
+      [style*="grid-template-columns: 2fr 1fr"],
+      [style*="grid-template-columns: 1fr 1fr"],
+      [style*="grid-template-columns: 3fr 1fr"] { grid-template-columns: 1fr !important; gap: 32px !important; }
+      [style*="grid-template-columns: repeat(4"], [style*="grid-template-columns: repeat(5"] { grid-template-columns: repeat(2, 1fr) !important; }
+      [style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important; }
+      h1 { font-size: clamp(40px, 12vw, 64px) !important; }
+      h2 { font-size: clamp(28px, 8vw, 40px) !important; }
+    }
+    /* Mobile preview mode constraint */
+    body.mobile-preview .hide-mobile { display: none !important; }
+    body.mobile-preview .mobile-menu-btn { display: inline-flex !important; }
+    body.mobile-preview .desktop-nav { display: none !important; }
+    body.mobile-preview h1 { font-size: clamp(34px, 9vw, 48px) !important; }
+    body.mobile-preview h2 { font-size: clamp(24px, 7vw, 34px) !important; }
+    body.mobile-preview [style*="grid-template-columns: repeat(4"],
+    body.mobile-preview [style*="grid-template-columns: repeat(5"] { grid-template-columns: repeat(2, 1fr) !important; }
+    body.mobile-preview [style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important; }
+    body.mobile-preview .plp-grid { grid-template-columns: 1fr !important; }
+    body.mobile-preview [style*="grid-template-columns: 1.15fr"],
+    body.mobile-preview [style*="grid-template-columns: 1.1fr"],
+    body.mobile-preview [style*="grid-template-columns: 1.4fr"],
+    body.mobile-preview [style*="grid-template-columns: 1fr 2fr"],
+    body.mobile-preview [style*="grid-template-columns: 2fr 1fr"],
+    body.mobile-preview [style*="grid-template-columns: 1fr 1fr"],
+    body.mobile-preview [style*="grid-template-columns: 3fr 1fr"] { grid-template-columns: 1fr !important; gap: 32px !important; }
+    body.mobile-preview { --pad-x: 20px; }
+
+    /* Range slider tweak */
+    input[type="range"] { height: 4px; background: var(--bg-sunken); -webkit-appearance: none; appearance: none; cursor: pointer; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; background: var(--ink); border-radius: 50%; cursor: pointer; }
+    input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; background: var(--ink); border: 0; border-radius: 50%; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+    // Toggle .is-mobile on body based on viewport — drives mobile filter drawer + nav
+    (function() {
+      const mq = window.matchMedia('(max-width: 900px)');
+      const apply = () => document.body.classList.toggle('is-mobile', mq.matches);
+      mq.addEventListener('change', apply);
+      document.addEventListener('DOMContentLoaded', apply);
+      apply();
+    })();
+  </script>
+
+  <!-- React + Babel -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <!-- Data + tweaks helpers -->
+  <script src="data.js"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+
+  <!-- Components -->
+  <script type="text/babel" src="components.jsx"></script>
+  <script type="text/babel" src="home.jsx"></script>
+  <script type="text/babel" src="plp.jsx"></script>
+  <script type="text/babel" src="pdp.jsx"></script>
+  <script type="text/babel" src="brand.jsx"></script>
+  <script type="text/babel" src="mini-cart.jsx"></script>
+
+  <!-- App -->
+  <script type="text/babel" src="app.jsx"></script>
+</body>
+</html>
