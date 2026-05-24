@@ -1,7 +1,97 @@
 import { getProductsByCollection, normalizeProduct, BRAND_COLLECTIONS } from '@/lib/shopify';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import BrandClient from './BrandClient';
+
+// Authentic typographic logo per brand
+function BrandLogo({ handle, wordmark }) {
+  const styles = {
+    'hugo-boss': {
+      fontFamily: '"Arial Black", Helvetica, sans-serif',
+      fontWeight: 900,
+      fontSize: 'clamp(28px, 5vw, 52px)',
+      letterSpacing: '0.05em',
+      color: 'rgba(0,0,0,0.85)',
+    },
+    'calvin-klein': {
+      fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: 300,
+      fontSize: 'clamp(14px, 2.5vw, 22px)',
+      letterSpacing: '0.5em',
+      color: 'rgba(0,0,0,0.8)',
+      textTransform: 'uppercase',
+    },
+    'la-roche-posay': {
+      fontFamily: 'Helvetica, Arial, sans-serif',
+      fontWeight: 700,
+      fontSize: 'clamp(10px, 1.5vw, 14px)',
+      letterSpacing: '0.25em',
+      color: 'rgba(0,0,0,0.8)',
+      textTransform: 'uppercase',
+      lineHeight: 1.8,
+      textAlign: 'center',
+    },
+    'vichy': {
+      fontFamily: '"Arial Black", sans-serif',
+      fontWeight: 900,
+      fontSize: 'clamp(32px, 6vw, 64px)',
+      letterSpacing: '0.35em',
+      color: 'rgba(0,0,0,0.8)',
+    },
+    'skinceuticals': {
+      fontFamily: 'var(--font-display)',
+      fontStyle: 'italic',
+      fontSize: 'clamp(22px, 4vw, 40px)',
+      fontWeight: 500,
+      letterSpacing: '0.02em',
+      color: 'rgba(0,0,0,0.8)',
+    },
+    'lancaster': {
+      fontFamily: 'Helvetica, Arial, sans-serif',
+      fontWeight: 700,
+      fontSize: 'clamp(18px, 3vw, 30px)',
+      letterSpacing: '0.28em',
+      color: 'rgba(0,0,0,0.8)',
+      textTransform: 'uppercase',
+    },
+    'gucci': {
+      fontFamily: 'var(--font-display)',
+      fontWeight: 600,
+      fontSize: 'clamp(28px, 5vw, 56px)',
+      letterSpacing: '0.12em',
+      color: 'rgba(0,0,0,0.8)',
+    },
+  };
+
+  const style = styles[handle] ?? {
+    fontFamily: 'var(--font-body)',
+    fontWeight: 800,
+    fontSize: 'clamp(20px, 3vw, 36px)',
+    letterSpacing: '-0.01em',
+    color: 'rgba(0,0,0,0.7)',
+  };
+
+  // Special multi-line logo for La Roche-Posay
+  if (handle === 'la-roche-posay') {
+    return (
+      <div style={{ textAlign: 'center', padding: '16px 24px' }}>
+        <div style={style}>
+          LA ROCHE-POSAY
+        </div>
+        <div style={{ ...style, fontSize: 'clamp(8px, 1vw, 10px)', letterSpacing: '0.3em', marginTop: 4, opacity: 0.6 }}>
+          LABORATOIRE DERMATOLOGIQUE
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ padding: '16px 32px', textAlign: 'center', ...style }}>
+      {wordmark}
+    </div>
+  );
+}
 
 export const revalidate = 120;
 
@@ -107,7 +197,7 @@ export default async function BrandPage({ params }) {
             <span style={{ color: 'var(--ink)' }}>{brand.name}</span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 64, alignItems: 'end' }}>
+          <div className="brand-hero-grid" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 64, alignItems: 'end' }}>
             <div>
               <div className="eyebrow" style={{ marginBottom: 16 }}>Shop het volledige merk</div>
               <h1 style={{
@@ -143,11 +233,28 @@ export default async function BrandPage({ params }) {
               </div>
             </div>
 
-            {/* Decorative box — placeholder for product imagery */}
-            <div style={{ aspectRatio: '4/5', maxHeight: 480, background: 'rgba(255,255,255,0.25)', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ textAlign: 'center', padding: 32 }}>
-                <div style={{ fontFamily: 'var(--font-body)', fontWeight: 800, fontSize: 'clamp(20px, 3vw, 36px)', letterSpacing: '-0.01em', opacity: 0.5 }}>
-                  {brand.wordmark}
+            {/* Brand hero image showcase */}
+            <div className="brand-hero-logo-box" style={{ position: 'relative', aspectRatio: '4/5', maxHeight: 480, overflow: 'hidden', background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.45)' }}>
+              {products[0]?.image ? (
+                <Image
+                  src={products[0].image}
+                  alt={products[0].imageAlt || brand.name}
+                  fill
+                  priority
+                  sizes="(max-width: 900px) 0px, 40vw"
+                  style={{ objectFit: 'contain', padding: 32 }}
+                />
+              ) : null}
+              {/* Bottom brand wordmark bar */}
+              <div style={{
+                position: 'absolute', bottom: 0, left: 0, right: 0,
+                padding: '40px 24px 24px',
+                background: 'linear-gradient(transparent, rgba(255,255,255,0.92) 50%)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
+              }}>
+                <BrandLogo handle={params.handle} wordmark={brand.wordmark} />
+                <div style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 13, color: 'rgba(0,0,0,0.45)', letterSpacing: '0.04em' }}>
+                  {data.tagline}
                 </div>
               </div>
             </div>
@@ -158,7 +265,7 @@ export default async function BrandPage({ params }) {
       {/* Brand stats bar */}
       <section style={{ background: 'var(--bg-elev)', padding: '24px 0', borderBottom: '1px solid var(--border)' }}>
         <div className="container-wide">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 32 }}>
+          <div className="brand-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 32 }}>
             {[
               { icon: '✦', title: '100% origineel', sub: 'Direct van leverancier' },
               { icon: '★', title: '4.8 sterren', sub: 'Op basis van 1.200+ reviews' },
@@ -187,7 +294,7 @@ export default async function BrandPage({ params }) {
 
       {/* Brand story split */}
       <section style={{ background: 'var(--bg-sunken)', padding: '80px 0' }}>
-        <div className="container-wide" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
+        <div className="container-wide brand-story-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
           <div>
             <div className="eyebrow" style={{ marginBottom: 16 }}>Het verhaal achter {brand.name}</div>
             <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', marginBottom: 20 }}>
@@ -203,7 +310,7 @@ export default async function BrandPage({ params }) {
               </Link>
             </div>
           </div>
-          <div style={{ aspectRatio: '1/1.1', background: data.heroBg, position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="brand-story-image" style={{ aspectRatio: '1/1.1', background: data.heroBg, position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ textAlign: 'center', padding: 40, position: 'relative', zIndex: 2 }}>
               <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.5, marginBottom: 12 }}>Editorial · {brand.name}</div>
               <div style={{ fontFamily: 'var(--font-body)', fontWeight: 800, fontSize: 'clamp(18px, 3vw, 28px)', letterSpacing: '-0.01em', opacity: 0.4 }}>

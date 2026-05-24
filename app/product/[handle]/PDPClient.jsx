@@ -103,8 +103,8 @@ export default function PDPClient({ product, allImages, variants, description, b
   return (
     <div>
       {/* Gallery + Info */}
-      <div className="container-wide" style={{ padding: '24px 32px 0' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: 64, alignItems: 'start' }}>
+      <div className="container-wide pdp-container">
+        <div className="pdp-grid" style={{ display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: 64, alignItems: 'start' }}>
 
           {/* Gallery */}
           <div>
@@ -179,7 +179,7 @@ export default function PDPClient({ product, allImages, variants, description, b
             </div>
 
             {/* Price */}
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 4 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 4, flexWrap: 'wrap' }}>
               <span style={{ fontSize: 32, fontFamily: 'var(--font-display)', color: product.onSale ? 'var(--sale)' : 'var(--ink)' }}>
                 {formatPrice(product.price, product.currencyCode)}
               </span>
@@ -198,7 +198,7 @@ export default function PDPClient({ product, allImages, variants, description, b
 
             {/* Stock status pill */}
             <div style={{
-              display: 'flex', alignItems: 'center', gap: 8,
+              display: 'flex', alignItems: 'flex-start', gap: 8,
               padding: '12px 14px',
               background: product.stock <= 5 ? 'var(--sale-bg)' : 'var(--success-bg)',
               marginBottom: 24, fontSize: 13,
@@ -238,7 +238,7 @@ export default function PDPClient({ product, allImages, variants, description, b
             )}
 
             {/* Qty + Add to cart + Wishlist */}
-            <div style={{ display: 'flex', gap: 12, marginBottom: 12 }}>
+            <div className="pdp-add-row" style={{ display: 'flex', gap: 12, marginBottom: 12, flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--ink)', height: 52, flexShrink: 0 }}>
                 <button onClick={() => setQty((q) => Math.max(1, q - 1))}
                   style={{ background: 'none', border: 0, width: 44, height: '100%', fontSize: 18, cursor: 'pointer' }}>−</button>
@@ -249,8 +249,8 @@ export default function PDPClient({ product, allImages, variants, description, b
               <button
                 onClick={handleAdd}
                 disabled={!product.availableForSale}
-                className="btn btn-lg"
-                style={{ flex: 1, height: 52, fontSize: 13, opacity: product.availableForSale ? 1 : 0.5 }}>
+                className="btn btn-lg pdp-add-btn"
+                style={{ flex: 1, height: 52, fontSize: 13, opacity: product.availableForSale ? 1 : 0.5, minWidth: 160 }}>
                 {addedFeedback
                   ? '✓ Toegevoegd!'
                   : product.availableForSale
@@ -336,7 +336,7 @@ export default function PDPClient({ product, allImages, variants, description, b
               <div className="eyebrow" style={{ marginBottom: 12 }}>Bouw je routine</div>
               <h2 style={{ fontSize: 'clamp(28px, 3vw, 40px)' }}>Bestelt vaak samen met</h2>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28 }}>
+            <div className="products-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28 }}>
               {relatedProducts.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           </div>
@@ -346,7 +346,7 @@ export default function PDPClient({ product, allImages, variants, description, b
       {/* Reviews section */}
       <section style={{ padding: '80px 0', borderTop: '1px solid var(--border)', marginTop: 32 }}>
         <div className="container-wide">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 64 }}>
+          <div className="pdp-reviews-grid">
             {/* Score overview */}
             <div>
               <div className="eyebrow" style={{ marginBottom: 16 }}>Reviews</div>
@@ -409,7 +409,7 @@ export default function PDPClient({ product, allImages, variants, description, b
                 </Link>
               )}
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28 }}>
+            <div className="products-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28 }}>
               {relatedProducts.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           </div>

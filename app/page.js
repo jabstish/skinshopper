@@ -41,7 +41,7 @@ export default async function HomePage() {
     <>
       {/* Hero */}
       <section style={{ position: 'relative', background: 'var(--bg-sunken)', overflow: 'hidden' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', minHeight: 'min(720px, 78vh)' }}>
+        <div className="hero-split" style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', minHeight: 'min(720px, 78vh)' }}>
           <div className="hero-text">
             <div className="eyebrow" style={{ marginBottom: 24 }}>Lente collectie · 2026</div>
             <h1 className="hero-h1" style={{ lineHeight: 0.95, marginBottom: 28, letterSpacing: '-0.02em' }}>
@@ -66,7 +66,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div style={{ position: 'relative', background: 'linear-gradient(140deg, #efe4d2 0%, #d4b896 50%, #8b6f47 100%)', minHeight: 400 }}>
+          <div className="hero-panel-right" style={{ position: 'relative', background: 'linear-gradient(140deg, #efe4d2 0%, #d4b896 50%, #8b6f47 100%)', minHeight: 400 }}>
             <div style={{ position: 'absolute', top: 32, right: 32, color: 'rgba(255,255,255,0.85)' }}>
               <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 4 }}>Editorial · 01</div>
               <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase' }}>SS · 26</div>
@@ -106,7 +106,7 @@ export default async function HomePage() {
               </div>
               <Link href="/shop/huidverzorging" style={{ fontSize: 13, textDecoration: 'underline', textUnderlineOffset: 4 }}>Bekijk alles →</Link>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28 }}>
+            <div className="products-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28 }}>
               {products.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           </div>
@@ -131,7 +131,7 @@ export default async function HomePage() {
               <span style={{ fontSize: 14 }}><strong>4.8</strong> · 1.247 reviews</span>
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+          <div className="reviews-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
             {REVIEWS.map((r, i) => (
               <div key={i} style={{ padding: 28, background: 'var(--bg-elev)', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <div className="row" style={{ justifyContent: 'space-between' }}>

@@ -10,7 +10,7 @@ const CATEGORIES = [
 
 export default function CategoryTiles({ images = {} }) {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+    <div className="category-tiles-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
       {CATEGORIES.map((cat) => {
         const img = images[cat.collection];
         return (

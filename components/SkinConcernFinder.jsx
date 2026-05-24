@@ -19,7 +19,7 @@ export default function SkinConcernFinder() {
   return (
     <section style={{ background: 'var(--bg-sunken)', padding: '80px 0' }}>
       <div className="container-wide">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 64, alignItems: 'center' }}>
+        <div className="skin-concern-outer">
           <div>
             <div className="eyebrow" style={{ marginBottom: 12 }}>Vind jouw routine</div>
             <h2 style={{ fontSize: 'clamp(36px, 4vw, 56px)', marginBottom: 16 }}>
@@ -34,7 +34,7 @@ export default function SkinConcernFinder() {
             </Link>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+          <div className="skin-concern-grid">
             {CONCERNS.map((c) => (
               <Link
                 key={c.id}

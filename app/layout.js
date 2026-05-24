@@ -1,5 +1,7 @@
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
+import { WishlistProvider } from '@/context/WishlistContext';
+import { AccountProvider } from '@/context/AccountContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MiniCart from '@/components/MiniCart';
@@ -23,11 +25,15 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <CartProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <MiniCart />
-          <Toast />
+          <WishlistProvider>
+            <AccountProvider>
+              <Header />
+              <main>{children}</main>
+              <Footer />
+              <MiniCart />
+              <Toast />
+            </AccountProvider>
+          </WishlistProvider>
         </CartProvider>
       </body>
     </html>

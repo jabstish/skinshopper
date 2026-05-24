@@ -25,6 +25,13 @@ const SKIN_CONCERNS = {
   'Droge huid': ['droog', 'nutritic', 'nourish', ' rich'],
 };
 
+const SORT_OPTIONS = [
+  { value: 'relevance', label: 'Relevantie' },
+  { value: 'price-asc', label: 'Prijs ↑' },
+  { value: 'price-desc', label: 'Prijs ↓' },
+  { value: 'sale', label: 'Meeste korting' },
+];
+
 function matchesKeywords(text, keywords) {
   const t = text.toLowerCase();
   return keywords.some((k) => t.includes(k.toLowerCase()));
@@ -37,6 +44,7 @@ export default function PLPClient({ category, title, sub, initialProducts }) {
   const [brands, setBrands] = useState([]);
   const [scents, setScents] = useState([]);
   const [concerns, setConcerns] = useState([]);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
   const showScents = category === 'parfum';
   const showConcerns = category === 'huidverzorging' || category === 'zonbescherming';
@@ -76,6 +84,55 @@ export default function PLPClient({ category, title, sub, initialProducts }) {
   const activeFilters = (onSaleOnly ? 1 : 0) + (maxPrice < 200 ? 1 : 0) + brands.length + scents.length + concerns.length;
   const clearAll = () => { setOnSaleOnly(false); setMaxPrice(200); setBrands([]); setScents([]); setConcerns([]); };
 
+  const FilterSidebar = () => (
+    <>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <div className="eyebrow">Filters {activeFilters > 0 && <span style={{ color: 'var(--accent-deep)' }}>({activeFilters})</span>}</div>
+        {activeFilters > 0 && (
+          <button onClick={clearAll} style={{ background: 'none', border: 0, fontSize: 11, textDecoration: 'underline', cursor: 'pointer', color: 'var(--ink-3)' }}>
+            Wis alles
+          </button>
+        )}
+      </div>
+
+      <FilterGroup title="Beschikbaarheid">
+        <CheckRow checked={onSaleOnly} onChange={() => setOnSaleOnly((v) => !v)} label="In de uitverkoop" highlight />
+      </FilterGroup>
+
+      <FilterGroup title="Prijs">
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 8 }}>
+          <span>€0</span>
+          <span>tot {formatPrice(maxPrice)}</span>
+        </div>
+        <input type="range" min="10" max="200" step="5" value={maxPrice}
+          onChange={(e) => setMaxPrice(+e.target.value)}
+          style={{ width: '100%', accentColor: 'var(--ink)' }} />
+      </FilterGroup>
+
+      <FilterGroup title="Merk">
+        {availableBrands.map((b) => (
+          <CheckRow key={b.name} checked={brands.includes(b.name)} onChange={() => toggleBrand(b.name)} label={b.name} count={b.count} />
+        ))}
+      </FilterGroup>
+
+      {showScents && (
+        <FilterGroup title="Geurfamilie">
+          {Object.keys(SCENT_FAMILIES).map((s) => (
+            <CheckRow key={s} checked={scents.includes(s)} onChange={() => toggleScent(s)} label={s} />
+          ))}
+        </FilterGroup>
+      )}
+
+      {showConcerns && (
+        <FilterGroup title="Huidprobleem">
+          {Object.keys(SKIN_CONCERNS).map((c) => (
+            <CheckRow key={c} checked={concerns.includes(c)} onChange={() => toggleConcern(c)} label={c} />
+          ))}
+        </FilterGroup>
+      )}
+    </>
+  );
+
   return (
     <div>
       {/* Header */}
@@ -86,71 +143,52 @@ export default function PLPClient({ category, title, sub, initialProducts }) {
             <span>/</span>
             <span>{title}</span>
           </div>
-          <h1 style={{ fontSize: 'clamp(48px, 6vw, 80px)', lineHeight: 0.95, marginBottom: 12 }}>{title}</h1>
+          <h1 style={{ fontSize: 'clamp(40px, 6vw, 80px)', lineHeight: 0.95, marginBottom: 12 }}>{title}</h1>
           <p style={{ color: 'var(--ink-3)', fontSize: 16, maxWidth: 540 }}>{sub}</p>
         </div>
       </section>
 
       <div className="container-wide" style={{ padding: '24px 32px 80px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 48 }}>
+        {/* Mobile filter/sort bar — één rij, geen dubbeling */}
+        <div className="plp-mobile-bar">
+          <button onClick={() => setMobileFilterOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 16px', background: 'var(--bg-elev)', border: '1px solid var(--border)', cursor: 'pointer', fontSize: 13, fontWeight: 500, flexShrink: 0 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+              <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
+            </svg>
+            Filters {activeFilters > 0 && <span style={{ background: 'var(--ink)', color: 'white', borderRadius: '50%', width: 18, height: 18, display: 'grid', placeItems: 'center', fontSize: 10 }}>{activeFilters}</span>}
+          </button>
+          <div style={{ display: 'flex', gap: 6, overflowX: 'auto', flex: 1, paddingBottom: 2 }}>
+            {SORT_OPTIONS.map((opt) => (
+              <button key={opt.value} onClick={() => setSort(opt.value)}
+                style={{ padding: '8px 14px', background: sort === opt.value ? 'var(--ink)' : 'var(--bg-elev)', color: sort === opt.value ? 'white' : 'var(--ink)', border: '1px solid ' + (sort === opt.value ? 'var(--ink)' : 'var(--border)'), borderRadius: 999, fontSize: 12, whiteSpace: 'nowrap', cursor: 'pointer', fontWeight: sort === opt.value ? 500 : 400 }}>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
-          {/* Filters */}
-          <aside style={{ position: 'sticky', top: 140, alignSelf: 'start', maxHeight: 'calc(100vh - 160px)', overflowY: 'auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <div className="eyebrow">Filters {activeFilters > 0 && <span style={{ color: 'var(--accent-deep)' }}>({activeFilters})</span>}</div>
-              {activeFilters > 0 && <button onClick={clearAll} style={{ background: 'none', border: 0, fontSize: 11, textDecoration: 'underline', cursor: 'pointer', color: 'var(--ink-3)' }}>Wis alles</button>}
-            </div>
+        <div className="plp-grid">
 
-            <FilterGroup title="Beschikbaarheid">
-              <CheckRow checked={onSaleOnly} onChange={() => setOnSaleOnly((v) => !v)} label="In de uitverkoop" highlight />
-            </FilterGroup>
-
-            <FilterGroup title="Prijs">
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 8 }}>
-                <span>€0</span>
-                <span>tot {formatPrice(maxPrice)}</span>
-              </div>
-              <input type="range" min="10" max="200" step="5" value={maxPrice}
-                onChange={(e) => setMaxPrice(+e.target.value)}
-                style={{ width: '100%', accentColor: 'var(--ink)' }} />
-            </FilterGroup>
-
-            <FilterGroup title="Merk">
-              {availableBrands.map((b) => (
-                <CheckRow key={b.name} checked={brands.includes(b.name)} onChange={() => toggleBrand(b.name)} label={b.name} count={b.count} />
-              ))}
-            </FilterGroup>
-
-            {showScents && (
-              <FilterGroup title="Geurfamilie">
-                {Object.keys(SCENT_FAMILIES).map((s) => (
-                  <CheckRow key={s} checked={scents.includes(s)} onChange={() => toggleScent(s)} label={s} />
-                ))}
-              </FilterGroup>
-            )}
-
-            {showConcerns && (
-              <FilterGroup title="Huidprobleem">
-                {Object.keys(SKIN_CONCERNS).map((c) => (
-                  <CheckRow key={c} checked={concerns.includes(c)} onChange={() => toggleConcern(c)} label={c} />
-                ))}
-              </FilterGroup>
-            )}
+          {/* Desktop Filters sidebar */}
+          <aside className="plp-sidebar">
+            <FilterSidebar />
           </aside>
 
           {/* Grid */}
           <section>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid var(--border)', paddingBottom: 16 }}>
+            <div className="plp-toolbar">
               <div style={{ fontSize: 13, color: 'var(--ink-3)' }}>
                 <strong style={{ color: 'var(--ink)' }}>{filtered.length}</strong> producten
               </div>
-              <select value={sort} onChange={(e) => setSort(e.target.value)}
-                style={{ padding: '8px 28px 8px 12px', fontSize: 13, background: 'transparent', border: '1px solid var(--border)', cursor: 'pointer' }}>
-                <option value="relevance">Relevantie</option>
-                <option value="price-asc">Prijs: laag → hoog</option>
-                <option value="price-desc">Prijs: hoog → laag</option>
-                <option value="sale">Grootste korting</option>
-              </select>
+              {/* Sort chips — desktop only, mobile has its own in the bar above */}
+              <div className="plp-sort-desktop" style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {SORT_OPTIONS.map((opt) => (
+                  <button key={opt.value} onClick={() => setSort(opt.value)}
+                    style={{ padding: '7px 14px', background: sort === opt.value ? 'var(--ink)' : 'transparent', color: sort === opt.value ? 'white' : 'var(--ink-3)', border: '1px solid ' + (sort === opt.value ? 'var(--ink)' : 'var(--border)'), borderRadius: 999, fontSize: 12, cursor: 'pointer', fontWeight: sort === opt.value ? 500 : 400, transition: 'all .15s ease' }}>
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {activeFilters > 0 && (
@@ -170,13 +208,34 @@ export default function PLPClient({ category, title, sub, initialProducts }) {
                 <button className="btn" onClick={clearAll}>Wis filters</button>
               </div>
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 28, rowGap: 48 }}>
+              <div className="plp-products-grid">
                 {filtered.map((p) => <ProductCard key={p.id} product={p} />)}
               </div>
             )}
           </section>
         </div>
       </div>
+
+      {/* Mobile filter drawer */}
+      {mobileFilterOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 200 }}>
+          <div onClick={() => setMobileFilterOpen(false)} style={{ position: 'absolute', inset: 0, background: 'rgba(14,14,14,0.45)' }} />
+          <aside style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 'min(340px, 90vw)', background: 'var(--bg)', overflowY: 'auto', padding: '0 20px 40px', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 0 16px', borderBottom: '1px solid var(--border)', marginBottom: 4, position: 'sticky', top: 0, background: 'var(--bg)', zIndex: 2 }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 22 }}>Filters</div>
+              <button onClick={() => setMobileFilterOpen(false)} style={{ background: 'none', border: 0, cursor: 'pointer', padding: 4 }}>
+                <svg width="20" height="20" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="m4 4 14 14m0-14L4 18" strokeLinecap="round" /></svg>
+              </button>
+            </div>
+            <FilterSidebar />
+            <div style={{ position: 'sticky', bottom: 0, background: 'var(--bg)', paddingTop: 16, paddingBottom: 8, marginTop: 'auto' }}>
+              <button className="btn btn-lg" style={{ width: '100%' }} onClick={() => setMobileFilterOpen(false)}>
+                {filtered.length} producten tonen
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
     </div>
   );
 }

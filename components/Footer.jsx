@@ -5,7 +5,7 @@ export default function Footer() {
     <footer style={{ background: 'var(--ink)', color: '#c7c1b5', marginTop: 80 }}>
       <div className="container-wide" style={{ padding: '80px 32px 32px' }}>
         {/* USP strip */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 32, paddingBottom: 56, borderBottom: '1px solid #2a2622', marginBottom: 56 }}>
+        <div className="footer-usp-grid" style={{ paddingBottom: 56, borderBottom: '1px solid #2a2622', marginBottom: 56 }}>
           {[
             ['Gratis verzending', 'Vanaf €60 — voor 22:00 besteld, morgen in huis'],
             ['30 dagen retour', 'Niet tevreden? Kosteloos retour'],
@@ -19,7 +19,7 @@ export default function Footer() {
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr', gap: 48 }}>
+        <div className="footer-links-grid">
           <div>
             <div style={{ fontFamily: 'var(--font-body)', fontWeight: 900, fontSize: 22, color: 'white', letterSpacing: '0.04em', marginBottom: 12 }}>SKINSHOPPER</div>
             <p style={{ fontSize: 13, lineHeight: 1.6, maxWidth: 320 }}>
@@ -60,7 +60,7 @@ export default function Footer() {
           ))}
         </div>
 
-        <div style={{ borderTop: '1px solid #2a2622', marginTop: 56, paddingTop: 24, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, fontSize: 12, color: '#8a857a' }}>
+        <div className="footer-bottom" style={{ borderTop: '1px solid #2a2622', marginTop: 56, paddingTop: 24 }}>
           <div>© 2026 SkinShopper — Alle rechten voorbehouden</div>
           <div style={{ display: 'flex', gap: 20 }}>
             <Link href="#" style={{ color: '#8a857a' }}>Privacy</Link>

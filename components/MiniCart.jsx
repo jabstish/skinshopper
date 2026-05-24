@@ -37,7 +37,7 @@ export default function MiniCart() {
         display: 'flex', flexDirection: 'column',
       }}>
         {/* Header */}
-        <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)' }}>
+        <div className="cart-drawer-header" style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: lines.length > 0 ? 14 : 0 }}>
             <div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 26 }}>Jouw mandje</div>
@@ -75,7 +75,7 @@ export default function MiniCart() {
         </div>
 
         {/* Items */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '4px 24px' }}>
+        <div className="cart-drawer-items" style={{ flex: 1, overflowY: 'auto', padding: '4px 24px' }}>
           {lines.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--ink-3)' }}>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, marginBottom: 8, color: 'var(--ink)' }}>Je mandje is leeg</div>
@@ -126,7 +126,7 @@ export default function MiniCart() {
 
         {/* Footer */}
         {lines.length > 0 && (
-          <div style={{ padding: '20px 24px', borderTop: '1px solid var(--border)', background: 'var(--bg)' }}>
+          <div className="cart-drawer-footer" style={{ padding: '20px 24px', borderTop: '1px solid var(--border)', background: 'var(--bg)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--ink-3)', marginBottom: 6 }}>
               <span>Subtotaal</span>
               <span>{formatPrice(subtotal, currency)}</span>

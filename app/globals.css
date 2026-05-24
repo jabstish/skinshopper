@@ -355,12 +355,194 @@ a { cursor: pointer; }
 .brand-tile { transition: background .15s ease, color .15s ease, transform .2s ease; }
 .brand-tile:hover { background: var(--ink) !important; color: white !important; }
 
-/* Mobile responsive */
+/* ── PDP ────────────────────────────────────────────────────── */
+.pdp-container { padding: 24px 32px 0; }
+
+/* ── SkinConcernFinder ──────────────────────────────────────── */
+.skin-concern-outer {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 64px;
+  align-items: center;
+}
+.skin-concern-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+/* ── PDP reviews grid ───────────────────────────────────────── */
+.pdp-reviews-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 64px;
+}
+
+/* ── Footer grids ───────────────────────────────────────────── */
+.footer-usp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+.footer-links-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 48px;
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 12px;
+  color: #8a857a;
+}
+
+/* ── Search ─────────────────────────────────────────────────── */
+.search-input-size { font-size: 22px; }
+.search-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+/* ── PLP layout ──────────────────────────────────────────────── */
+.plp-grid {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 48px;
+}
+.plp-sidebar {
+  position: sticky;
+  top: 140px;
+  align-self: start;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+}
+.plp-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.plp-products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  row-gap: 48px;
+}
+.plp-mobile-bar { display: none; }
+
+/* Editorial split grid */
+.editorial-split-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 0;
+  align-items: stretch;
+  min-height: 560px;
+}
+
+/* ── Mobile responsive ─────────────────────────────────────── */
 @media (max-width: 900px) {
-  :root { --pad-x: 20px; }
+  :root { --pad-x: 16px; }
+
+  /* Nav */
   .hide-mobile { display: none !important; }
   .show-mobile { display: flex !important; }
   .desktop-nav { display: none !important; }
+
+  /* Grids */
   .grid-2-mobile { grid-template-columns: repeat(2, 1fr) !important; }
   .grid-1-mobile { grid-template-columns: 1fr !important; }
+
+  /* Section */
+  .section { padding: 48px 0; }
+  .section-lg { padding: 64px 0; }
+  .section-head { margin-bottom: 24px; }
+  .section-head h2 { font-size: clamp(28px, 7vw, 40px); }
+
+  /* Container */
+  .container-wide { padding: 0 var(--pad-x); }
+
+  /* Hero split */
+  .hero-split {
+    grid-template-columns: 1fr !important;
+    min-height: auto !important;
+  }
+  .hero-panel-right { display: none !important; }
+
+  /* Category tiles: 2x2 */
+  .category-tiles-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  /* Product grids */
+  .products-grid-4 { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; row-gap: 28px !important; }
+  .products-grid-3 { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; row-gap: 28px !important; }
+
+  /* Reviews grid */
+  .reviews-grid { grid-template-columns: 1fr !important; }
+
+  /* PLP */
+  .plp-grid { grid-template-columns: 1fr; gap: 0; }
+  .plp-sidebar { display: none; }
+  .plp-mobile-bar { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; overflow-x: auto; }
+  .plp-toolbar { flex-direction: column; align-items: flex-start; }
+  .plp-sort-desktop { display: none !important; } /* sort chips al zichtbaar in mobile bar */
+  .plp-products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; row-gap: 28px; }
+
+  /* PDP */
+  .pdp-container { padding: 16px 16px 0 !important; }
+  .pdp-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .pdp-gallery { min-height: 300px !important; }
+  .pdp-add-row { flex-wrap: nowrap !important; }
+  .pdp-add-btn { min-width: 0 !important; font-size: 11px !important; }
+
+  /* Brand page hero */
+  .brand-hero-grid { grid-template-columns: 1fr !important; }
+  .brand-hero-logo-box { display: none !important; }
+  .brand-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .brand-story-grid { grid-template-columns: 1fr !important; }
+  .brand-story-image { display: none !important; }
+
+  /* Editorial split */
+  .editorial-split-grid { grid-template-columns: 1fr !important; }
+
+  /* Buttons */
+  .btn-lg { padding: 15px 20px; font-size: 12px; }
+
+  /* Header */
+  .header-main-bar { padding: 14px 16px !important; gap: 8px !important; }
+
+  /* SkinConcernFinder */
+  .skin-concern-outer { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .skin-concern-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+
+  /* PDP reviews */
+  .pdp-reviews-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+
+  /* Footer */
+  .footer-usp-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 20px !important; padding-bottom: 36px !important; }
+  .footer-links-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 28px !important; }
+  .footer-bottom { flex-direction: column; gap: 12px; }
+
+  /* Search */
+  .search-input-size { font-size: 16px !important; }
+  .search-results-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+
+  /* Cart */
+  .cart-drawer-header { padding: 16px !important; }
+  .cart-drawer-items { padding: 0 16px !important; }
+  .cart-drawer-footer { padding: 16px !important; }
+}
+
+/* ── Tablet (600–900px) ─────────────────────────────────────── */
+@media (min-width: 600px) and (max-width: 900px) {
+  .plp-products-grid { grid-template-columns: repeat(3, 1fr); }
+  .products-grid-4 { grid-template-columns: repeat(3, 1fr) !important; }
 }
