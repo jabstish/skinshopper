@@ -55,6 +55,7 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "ss01", "cv11";
+  overflow-x: hidden;
   text-rendering: optimizeLegibility;
 }
 
@@ -227,6 +228,20 @@ body.locked { overflow: hidden; }
 @keyframes fadeBackdrop {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Brands marquee */
+.brands-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 22s linear infinite;
+}
+.brands-marquee-track:hover {
+  animation-play-state: paused;
 }
 
 /* Product card */
@@ -436,6 +451,28 @@ a { cursor: pointer; }
   row-gap: 48px;
 }
 .plp-mobile-bar { display: none; }
+.plp-sticky-bar { display: none; }
+.brand-products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; row-gap: 48px; }
+
+/* Hero sale badge */
+.hero-sale-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--sale); color: white;
+  padding: 10px 18px; font-size: 13px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  text-decoration: none; margin-bottom: 28px;
+}
+
+/* Policy pages */
+.policy-content h2 { font-size: clamp(18px, 2.5vw, 24px); margin: 40px 0 12px; padding-top: 8px; border-top: 1px solid var(--border); }
+.policy-content h2:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+.policy-content h3 { font-size: 16px; margin: 24px 0 8px; color: var(--ink); }
+.policy-content p { font-size: 15px; line-height: 1.7; color: var(--ink-2); margin-bottom: 16px; }
+.policy-content ul { margin: 0 0 16px 20px; display: flex; flex-direction: column; gap: 8px; }
+.policy-content li { font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+.policy-content a { color: var(--ink); text-underline-offset: 3px; }
+.policy-content strong { color: var(--ink); font-weight: 600; }
+.policy-nav-link:hover { color: var(--ink) !important; border-left-color: var(--ink) !important; }
 
 /* Editorial split grid */
 .editorial-split-grid {
@@ -491,10 +528,22 @@ a { cursor: pointer; }
   /* PLP */
   .plp-grid { grid-template-columns: 1fr; gap: 0; }
   .plp-sidebar { display: none; }
-  .plp-mobile-bar { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; overflow-x: auto; }
+  .plp-sticky-bar { display: block; }
+  .plp-mobile-bar { display: flex; gap: 12px; align-items: center; overflow-x: auto; }
   .plp-toolbar { flex-direction: column; align-items: flex-start; }
   .plp-sort-desktop { display: none !important; } /* sort chips al zichtbaar in mobile bar */
   .plp-products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; row-gap: 28px; }
+  .brand-products-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; row-gap: 32px !important; }
+
+  /* Policy */
+  .policy-layout-grid { grid-template-columns: 1fr !important; }
+  .policy-sidebar { display: none !important; }
+
+  /* Contact */
+  .contact-grid { grid-template-columns: 1fr !important; gap: 40px !important; padding: 32px 16px 60px !important; }
+
+  /* Hero sale badge */
+  .hero-sale-badge { font-size: 11px !important; padding: 9px 14px !important; gap: 7px !important; width: 100%; box-sizing: border-box; justify-content: center; }
 
   /* PDP */
   .pdp-container { padding: 16px 16px 0 !important; }
@@ -545,4 +594,26 @@ a { cursor: pointer; }
 @media (min-width: 600px) and (max-width: 900px) {
   .plp-products-grid { grid-template-columns: repeat(3, 1fr); }
   .products-grid-4 { grid-template-columns: repeat(3, 1fr) !important; }
+}
+
+/* ── WhatsApp FAB ───────────────────────────────────────────── */
+.whatsapp-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 300;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+}
+.whatsapp-fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 28px rgba(37, 211, 102, 0.6);
 }

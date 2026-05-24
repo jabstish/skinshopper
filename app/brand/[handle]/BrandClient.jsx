@@ -25,7 +25,7 @@ export default function BrandClient({ products, brandHandle, brandName, category
               <p style={{ color: 'var(--ink-3)', fontSize: 14 }}>Producten worden binnenkort toegevoegd.</p>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28, rowGap: 48 }}>
+            <div className="brand-products-grid">
               {products.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           )}

@@ -7,6 +7,16 @@ import BrandsStrip from '@/components/BrandsStrip';
 import SkinConcernFinder from '@/components/SkinConcernFinder';
 import EditorialSplit from '@/components/EditorialSplit';
 
+export const metadata = {
+  title: 'SKINSHOPPER — Parfum & Huidverzorging | Origineel, Goedkoper',
+  description: 'Koop authentieke parfum en huidverzorging van La Roche-Posay, Vichy, Hugo Boss en meer. Tot 35% goedkoper dan de adviesprijs. Gratis verzending vanaf €60. Voor 22:00 besteld, morgen in huis.',
+  openGraph: {
+    title: 'SKINSHOPPER — Parfum & Huidverzorging',
+    description: 'Authentieke parfum en huidverzorging van de merken die je kent. Tot 35% korting, gratis verzending vanaf €60.',
+    type: 'website',
+  },
+};
+
 export const revalidate = 120;
 
 const REVIEWS = [
@@ -21,15 +31,31 @@ async function getCategoryImage(handle) {
 }
 
 export default async function HomePage() {
-  const [frontpage, parfumImg, skincareImg, sunImg, saleImg] = await Promise.all([
-    getProductsByCollection('frontpage', 8).catch(() => null),
+  const [frontpage, parfumCol, huidCol, sunCol, saleCol, parfumImg, skincareImg, sunImg, saleImg] = await Promise.all([
+    getProductsByCollection('frontpage', 4).catch(() => null),
+    getProductsByCollection('parfum', 1).catch(() => null),
+    getProductsByCollection('huidverzorging', 1).catch(() => null),
+    getProductsByCollection('zonnebrand-creme', 1).catch(() => null),
+    getProductsByCollection('sale', 1).catch(() => null),
     getCategoryImage('parfum'),
     getCategoryImage('la-roche-posay'),
     getCategoryImage('zonnebrand-creme'),
     getCategoryImage('skinceuticals'),
   ]);
 
-  const products = (frontpage?.products?.edges?.map((e) => normalizeProduct(e.node)) ?? []).slice(0, 8);
+  // 1 product per categorie + aanvullen vanuit frontpage
+  const perCategory = [parfumCol, huidCol, sunCol, saleCol]
+    .map((col) => col?.products?.edges?.[0]?.node)
+    .filter(Boolean)
+    .map(normalizeProduct);
+  const frontpageProducts = (frontpage?.products?.edges?.map((e) => normalizeProduct(e.node)) ?? []);
+  // Merge: per-category first, fill remainder from frontpage (no duplicates)
+  const seen = new Set(perCategory.map((p) => p.id));
+  const products = [
+    ...perCategory,
+    ...frontpageProducts.filter((p) => !seen.has(p.id)),
+  ].slice(0, 4);
+
   const categoryImages = {
     parfum: parfumImg,
     'la-roche-posay': skincareImg,
@@ -50,9 +76,17 @@ export default async function HomePage() {
               geuren met<br />
               <em style={{ fontStyle: 'italic', color: 'var(--accent-deep)' }}>karakter</em>.
             </h1>
-            <p style={{ fontSize: 17, lineHeight: 1.55, color: 'var(--ink-3)', maxWidth: 440, marginBottom: 40 }}>
-              Authentieke producten van de merken die je vertrouwt — La Roche-Posay, Vichy, SkinCeuticals, Hugo Boss. Tot 35% korting deze week.
+            <p style={{ fontSize: 17, lineHeight: 1.55, color: 'var(--ink-3)', maxWidth: 440, marginBottom: 28 }}>
+              Authentieke producten van de merken die je vertrouwt — La Roche-Posay, Vichy, SkinCeuticals, Hugo Boss.
             </p>
+
+            {/* Sale badge */}
+            <Link href="/shop/sale" className="hero-sale-badge" style={{ textDecoration: 'none', marginBottom: 28 }}>
+              <span style={{ fontSize: 18 }}>🔥</span>
+              <span>Tot 35% korting deze week</span>
+              <span style={{ opacity: 0.75, fontWeight: 400 }}>→ Bekijk sale</span>
+            </Link>
+
             <div className="row" style={{ gap: 12, flexWrap: 'wrap' }}>
               <Link href="/shop/huidverzorging" className="btn btn-lg">Shop huidverzorging</Link>
               <Link href="/shop/parfum" className="btn btn-lg btn-outline">Shop parfum</Link>
@@ -66,17 +100,39 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="hero-panel-right" style={{ position: 'relative', background: 'linear-gradient(140deg, #efe4d2 0%, #d4b896 50%, #8b6f47 100%)', minHeight: 400 }}>
-            <div style={{ position: 'absolute', top: 32, right: 32, color: 'rgba(255,255,255,0.85)' }}>
-              <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 4 }}>Editorial · 01</div>
-              <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase' }}>SS · 26</div>
-            </div>
+          <div className="hero-panel-right" style={{ position: 'relative', overflow: 'hidden', minHeight: 400 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://images.pexels.com/photos/19170038/pexels-photo-19170038.jpeg?auto=compress&cs=tinysrgb&w=1200&h=900&fit=crop"
+              alt="Gucci Bloom parfum"
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+            />
             <Link href="/shop/sale" style={{ position: 'absolute', bottom: 32, right: 32, padding: '12px 20px', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(6px)', textDecoration: 'none', color: 'inherit' }}>
               <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--sale)' }}>Sale · Bekijk alle aanbiedingen →</div>
             </Link>
           </div>
         </div>
       </section>
+
+      <BrandsStrip />
+
+      {/* Bestsellers — 3e sectie, 1 product per categorie */}
+      {products.length > 0 && (
+        <section className="section">
+          <div className="container-wide">
+            <div className="section-head" style={{ marginBottom: 32 }}>
+              <div>
+                <div className="eyebrow" style={{ marginBottom: 12 }}>Wat anderen kopen</div>
+                <h2>Bestsellers deze week</h2>
+              </div>
+              <Link href="/shop/huidverzorging" style={{ fontSize: 13, textDecoration: 'underline', textUnderlineOffset: 4 }}>Bekijk alles →</Link>
+            </div>
+            <div className="products-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28 }}>
+              {products.map((p) => <ProductCard key={p.id} product={p} />)}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Category tiles */}
       <section className="section">
@@ -95,28 +151,8 @@ export default async function HomePage() {
       {/* Skin concern finder */}
       <SkinConcernFinder />
 
-      {/* Bestsellers */}
-      {products.length > 0 && (
-        <section className="section">
-          <div className="container-wide">
-            <div className="section-head" style={{ marginBottom: 32 }}>
-              <div>
-                <div className="eyebrow" style={{ marginBottom: 12 }}>Wat anderen kopen</div>
-                <h2>Bestsellers deze week</h2>
-              </div>
-              <Link href="/shop/huidverzorging" style={{ fontSize: 13, textDecoration: 'underline', textUnderlineOffset: 4 }}>Bekijk alles →</Link>
-            </div>
-            <div className="products-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 28 }}>
-              {products.map((p) => <ProductCard key={p.id} product={p} />)}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Editorial split */}
       <EditorialSplit />
-
-      <BrandsStrip />
 
       {/* Reviews */}
       <section className="section">

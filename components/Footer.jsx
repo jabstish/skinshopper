@@ -42,11 +42,11 @@ export default function Footer() {
               { label: 'SkinCeuticals', href: '/brand/skinceuticals' },
             ]],
             ['Info', [
-              { label: 'Over ons', href: '#' },
-              { label: 'Contact', href: '#' },
-              { label: 'Bezorging', href: '#' },
-              { label: 'Retour', href: '#' },
-              { label: 'Privacy', href: '#' },
+              { label: 'Over ons', href: '/contact' },
+              { label: 'Contact', href: '/contact' },
+              { label: 'Bezorging', href: '/policies/shipping-policy' },
+              { label: 'Retour', href: '/policies/refund-policy' },
+              { label: 'Privacy', href: '/policies/privacy-policy' },
             ]],
           ].map(([title, items]) => (
             <div key={title}>
@@ -62,10 +62,11 @@ export default function Footer() {
 
         <div className="footer-bottom" style={{ borderTop: '1px solid #2a2622', marginTop: 56, paddingTop: 24 }}>
           <div>© 2026 SkinShopper — Alle rechten voorbehouden</div>
-          <div style={{ display: 'flex', gap: 20 }}>
-            <Link href="#" style={{ color: '#8a857a' }}>Privacy</Link>
-            <Link href="#" style={{ color: '#8a857a' }}>Cookies</Link>
-            <Link href="#" style={{ color: '#8a857a' }}>Algemene voorwaarden</Link>
+          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+            <Link href="/policies/privacy-policy" style={{ color: '#8a857a' }}>Privacy</Link>
+            <Link href="/policies/refund-policy" style={{ color: '#8a857a' }}>Retourbeleid</Link>
+            <Link href="/policies/shipping-policy" style={{ color: '#8a857a' }}>Verzendbeleid</Link>
+            <Link href="/policies/terms-of-service" style={{ color: '#8a857a' }}>Algemene voorwaarden</Link>
           </div>
         </div>
       </div>

@@ -7,8 +7,24 @@ export const revalidate = 120;
 
 export async function generateMetadata({ params }) {
   const product = await getProduct(params.handle).catch(() => null);
-  if (!product) return { title: 'Product niet gevonden — SkinShopper' };
-  return { title: `${product.title} — SkinShopper`, description: product.description?.slice(0, 155) };
+  if (!product) return { title: 'Product niet gevonden — SKINSHOPPER' };
+  const price = product.priceRange?.minVariantPrice?.amount
+    ? `Vanaf €${parseFloat(product.priceRange.minVariantPrice.amount).toFixed(2).replace('.', ',')}. `
+    : '';
+  const description = product.description
+    ? product.description.slice(0, 130) + (product.description.length > 130 ? '…' : '')
+    : `${price}100% origineel bij SkinShopper. Gratis verzending vanaf €60.`;
+  return {
+    title: `${product.title} kopen — SKINSHOPPER`,
+    description,
+    openGraph: {
+      title: product.title,
+      description,
+      images: product.images?.edges?.[0]?.node?.url
+        ? [{ url: product.images.edges[0].node.url }]
+        : [],
+    },
+  };
 }
 
 export default async function ProductPage({ params }) {

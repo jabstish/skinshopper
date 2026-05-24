@@ -563,12 +563,12 @@ export default function Header() {
                 <span>Verlanglijst</span>
                 {wishlistCount > 0 && <span style={{ marginLeft: 'auto', fontSize: 12, background: 'var(--sale)', color: 'white', borderRadius: '50%', width: 20, height: 20, display: 'grid', placeItems: 'center' }}>{wishlistCount}</span>}
               </button>
-              <button style={mobileLinkStyle}>
+              <button onClick={() => { setMobileOpen(false); setAccountOpen(true); }} style={mobileLinkStyle}>
                 <PackageIcon /> Volg je bestelling
               </button>
-              <button style={mobileLinkStyle}>
+              <Link href="/contact" onClick={() => setMobileOpen(false)} style={{ ...mobileLinkStyle, textDecoration: 'none' }}>
                 <ChatIcon /> Contact
-              </button>
+              </Link>
             </div>
 
             {/* USPs */}

@@ -156,10 +156,19 @@ const BRAND_DATA = {
 
 export async function generateMetadata({ params }) {
   const brand = BRAND_COLLECTIONS.find((b) => b.handle === params.handle);
-  if (!brand) return { title: 'Merk — SkinShopper' };
+  if (!brand) return { title: 'Merk — SKINSHOPPER' };
+  const data = BRAND_DATA[params.handle];
+  const category = brand.category === 'parfum' ? 'parfum' : 'huidverzorging';
+  const description = data?.desc
+    ? data.desc.slice(0, 155)
+    : `Koop originele ${brand.name} ${category} bij SkinShopper. 100% authentiek, scherpe prijzen en gratis verzending vanaf €60.`;
   return {
-    title: `${brand.name} — SkinShopper`,
-    description: BRAND_DATA[params.handle]?.desc?.slice(0, 155),
+    title: `${brand.name} ${category === 'parfum' ? 'Parfum' : 'Huidverzorging'} kopen — SKINSHOPPER`,
+    description,
+    openGraph: {
+      title: `${brand.name} — SKINSHOPPER`,
+      description,
+    },
   };
 }
 
@@ -292,31 +301,21 @@ export default async function BrandPage({ params }) {
         category={brand.category}
       />
 
-      {/* Brand story split */}
+      {/* Brand story */}
       <section style={{ background: 'var(--bg-sunken)', padding: '80px 0' }}>
-        <div className="container-wide brand-story-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
-          <div>
-            <div className="eyebrow" style={{ marginBottom: 16 }}>Het verhaal achter {brand.name}</div>
-            <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', marginBottom: 20 }}>
-              <em style={{ fontStyle: 'italic' }}>{data.tagline}.</em>
-            </h2>
-            <p style={{ color: 'var(--ink-3)', fontSize: 16, lineHeight: 1.7, marginBottom: 16 }}>{data.story}</p>
-            <p style={{ color: 'var(--ink-3)', fontSize: 16, lineHeight: 1.7, marginBottom: 32 }}>
-              Bij SkinShopper voeren we het volledige {brand.name} assortiment direct van de officiële distributeur — gegarandeerd authentiek, met BTW-bonnen.
-            </p>
-            <div style={{ display: 'flex', gap: 12 }}>
-              <Link href={`/shop/${categoryHandle}`} className="btn">
-                Alle {brand.category === 'parfum' ? 'parfums' : 'huidverzorging'}
-              </Link>
-            </div>
-          </div>
-          <div className="brand-story-image" style={{ aspectRatio: '1/1.1', background: data.heroBg, position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ textAlign: 'center', padding: 40, position: 'relative', zIndex: 2 }}>
-              <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.5, marginBottom: 12 }}>Editorial · {brand.name}</div>
-              <div style={{ fontFamily: 'var(--font-body)', fontWeight: 800, fontSize: 'clamp(18px, 3vw, 28px)', letterSpacing: '-0.01em', opacity: 0.4 }}>
-                {brand.wordmark}
-              </div>
-            </div>
+        <div className="container-wide" style={{ maxWidth: 720 }}>
+          <div className="eyebrow" style={{ marginBottom: 16 }}>Het verhaal achter {brand.name}</div>
+          <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', marginBottom: 20 }}>
+            <em style={{ fontStyle: 'italic' }}>{data.tagline}.</em>
+          </h2>
+          <p style={{ color: 'var(--ink-3)', fontSize: 16, lineHeight: 1.7, marginBottom: 16 }}>{data.story}</p>
+          <p style={{ color: 'var(--ink-3)', fontSize: 16, lineHeight: 1.7, marginBottom: 32 }}>
+            Bij SkinShopper voeren we het volledige {brand.name} assortiment direct van de officiële distributeur — gegarandeerd authentiek, met BTW-bonnen.
+          </p>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <Link href={`/shop/${categoryHandle}`} className="btn">
+              Alle {brand.category === 'parfum' ? 'parfums' : 'huidverzorging'}
+            </Link>
           </div>
         </div>
       </section>

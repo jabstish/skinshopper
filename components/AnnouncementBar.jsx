@@ -14,7 +14,7 @@ export default function AnnouncementBar() {
     return () => clearInterval(t);
   }, []);
   return (
-    <div style={{ background: 'var(--ink)', color: 'white', textAlign: 'center', padding: '10px 16px', fontSize: 12, letterSpacing: '0.04em' }}>
+    <div style={{ background: 'var(--ink)', color: 'white', textAlign: 'center', padding: '10px 16px', fontSize: 12, letterSpacing: '0.04em', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
       <span key={idx} style={{ animation: 'fadeIn .4s ease' }}>{MSGS[idx]}</span>
     </div>
   );

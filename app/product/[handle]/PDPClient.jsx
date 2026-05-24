@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import { createCart } from '@/lib/shopify';
 import { formatPrice } from '@/lib/shopify';
 import ProductCard from '@/components/ProductCard';
 
@@ -27,6 +28,19 @@ export default function PDPClient({ product, allImages, variants, description, b
   const [openAccordion, setOpenAccordion] = useState('description');
   const [wishlisted, setWishlisted] = useState(false);
   const [addedFeedback, setAddedFeedback] = useState(false);
+  const [idealLoading, setIdealLoading] = useState(false);
+
+  async function handleDirectCheckout() {
+    setIdealLoading(true);
+    try {
+      const cart = await createCart([{ merchandiseId: selectedVariantId, quantity: qty }]);
+      if (cart?.checkoutUrl) window.location.href = cart.checkoutUrl;
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIdealLoading(false);
+    }
+  }
   const { addToCart } = useCart();
 
   const handleAdd = async () => {
@@ -107,7 +121,7 @@ export default function PDPClient({ product, allImages, variants, description, b
         <div className="pdp-grid" style={{ display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: 64, alignItems: 'start' }}>
 
           {/* Gallery */}
-          <div>
+          <div style={{ minWidth: 0 }}>
             <div style={{ position: 'relative', aspectRatio: '4/5', background: '#fff', marginBottom: 12 }}>
               {allImages[activeImg] ? (
                 <Image
@@ -135,13 +149,13 @@ export default function PDPClient({ product, allImages, variants, description, b
             </div>
 
             {allImages.length > 1 && (
-              <div style={{ display: 'flex', gap: 8 }}>
-                {allImages.slice(0, 4).map((img, i) => (
+              <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
+                {allImages.map((img, i) => (
                   <button
                     key={i}
                     onClick={() => setActiveImg(i)}
                     style={{
-                      flex: 1, aspectRatio: '1',
+                      flexShrink: 0, width: 72, height: 72,
                       position: 'relative',
                       background: '#fff',
                       border: activeImg === i ? '2px solid var(--ink)' : '1px solid var(--border)',
@@ -150,7 +164,7 @@ export default function PDPClient({ product, allImages, variants, description, b
                       transition: 'border-color .15s ease',
                     }}
                   >
-                    <Image src={img.url} alt={img.altText ?? ''} fill style={{ objectFit: 'contain', padding: 8 }} sizes="120px" />
+                    <Image src={img.url} alt={img.altText ?? ''} fill style={{ objectFit: 'contain', padding: 8 }} sizes="80px" />
                   </button>
                 ))}
               </div>
@@ -158,7 +172,7 @@ export default function PDPClient({ product, allImages, variants, description, b
           </div>
 
           {/* Info column */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
             {brandHandle ? (
               <Link href={`/brand/${brandHandle}`}
                 style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 12 }}>
@@ -278,8 +292,13 @@ export default function PDPClient({ product, allImages, variants, description, b
             </div>
 
             {/* iDEAL / direct checkout button */}
-            <button className="btn btn-lg" style={{ background: '#5a31e0', marginBottom: 28, color: 'white', border: 'none' }}>
-              <span style={{ fontWeight: 700 }}>Direct kopen</span> met <strong>iDEAL</strong>
+            <button
+              onClick={handleDirectCheckout}
+              disabled={idealLoading}
+              className="btn btn-lg"
+              style={{ background: '#5a31e0', marginBottom: 28, color: 'white', border: 'none', opacity: idealLoading ? 0.7 : 1, cursor: idealLoading ? 'wait' : 'pointer' }}
+            >
+              {idealLoading ? 'Laden…' : <><span style={{ fontWeight: 700 }}>Direct kopen</span> met <strong>iDEAL</strong></>}
             </button>
 
             {/* Trust grid */}
@@ -353,7 +372,7 @@ export default function PDPClient({ product, allImages, variants, description, b
               <div style={{ fontSize: 56, fontFamily: 'var(--font-display)', lineHeight: 1 }}>4.8</div>
               <div className="stars" style={{ fontSize: 18, marginTop: 4 }}>★★★★★</div>
               <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 4 }}>Op basis van 247 reviews</div>
-              <button className="btn btn-outline" style={{ marginTop: 24 }}>Schrijf een review</button>
+
               <div style={{ marginTop: 28 }}>
                 {REVIEW_DIST.map((d) => (
                   <div key={d.stars} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8, fontSize: 12 }}>

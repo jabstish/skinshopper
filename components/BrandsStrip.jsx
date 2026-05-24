@@ -39,33 +39,35 @@ const BRAND_STYLES = {
   },
 };
 
+// Duplicate for seamless loop
+const BRANDS_LOOP = [...BRAND_COLLECTIONS, ...BRAND_COLLECTIONS];
+
 export default function BrandsStrip() {
   return (
-    <section style={{ background: 'var(--bg-sunken)', padding: '64px 0' }}>
-      <div className="container-wide">
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div className="eyebrow">Originele producten van</div>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 8 }}>
-          {BRAND_COLLECTIONS.map((b) => {
+    <section style={{ background: 'var(--bg-sunken)', padding: '48px 0', overflow: 'hidden' }}>
+      <div style={{ textAlign: 'center', marginBottom: 28 }}>
+        <div className="eyebrow">Originele producten van</div>
+      </div>
+
+      {/* Marquee wrapper */}
+      <div style={{ overflow: 'hidden', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+        <div className="brands-marquee-track">
+          {BRANDS_LOOP.map((b, i) => {
             const style = BRAND_STYLES[b.handle] ?? {};
             return (
               <Link
-                key={b.handle}
+                key={`${b.handle}-${i}`}
                 href={`/brand/${b.handle}`}
-                className="brand-tile"
                 style={{
-                  padding: '36px 16px',
-                  background: 'var(--bg-elev)',
-                  border: '1px solid var(--border)',
-                  textAlign: 'center',
-                  color: 'var(--ink)',
-                  textDecoration: 'none',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  minHeight: 100,
-                  transition: 'background .15s ease, color .15s ease',
+                  padding: '28px 40px',
+                  flexShrink: 0,
+                  borderRight: '1px solid var(--border)',
+                  color: 'var(--ink)',
+                  textDecoration: 'none',
+                  transition: 'color .15s ease',
                 }}
               >
                 <span style={{ ...style, display: 'inline-block', whiteSpace: 'nowrap' }}>

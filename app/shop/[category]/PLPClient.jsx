@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import ProductCard from '@/components/ProductCard';
 import { formatPrice } from '@/lib/shopify';
 
@@ -84,6 +84,12 @@ export default function PLPClient({ category, title, sub, initialProducts }) {
   const activeFilters = (onSaleOnly ? 1 : 0) + (maxPrice < 200 ? 1 : 0) + brands.length + scents.length + concerns.length;
   const clearAll = () => { setOnSaleOnly(false); setMaxPrice(200); setBrands([]); setScents([]); setConcerns([]); };
 
+  const [headerH, setHeaderH] = useState(0);
+  useEffect(() => {
+    const h = document.querySelector('header')?.offsetHeight ?? 0;
+    setHeaderH(h);
+  }, []);
+
   const FilterSidebar = () => (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
@@ -148,9 +154,9 @@ export default function PLPClient({ category, title, sub, initialProducts }) {
         </div>
       </section>
 
-      <div className="container-wide" style={{ padding: '24px 32px 80px' }}>
-        {/* Mobile filter/sort bar — één rij, geen dubbeling */}
-        <div className="plp-mobile-bar">
+      {/* Sticky mobile filter/sort bar — buiten container, kleeft aan nav */}
+      <div className="plp-sticky-bar" style={{ position: 'sticky', top: headerH, zIndex: 40, background: 'var(--bg)', borderBottom: '1px solid var(--border)', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <div className="plp-mobile-bar" style={{ padding: '10px 16px' }}>
           <button onClick={() => setMobileFilterOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 16px', background: 'var(--bg-elev)', border: '1px solid var(--border)', cursor: 'pointer', fontSize: 13, fontWeight: 500, flexShrink: 0 }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
               <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
@@ -166,7 +172,9 @@ export default function PLPClient({ category, title, sub, initialProducts }) {
             ))}
           </div>
         </div>
+      </div>
 
+      <div className="container-wide" style={{ padding: '24px 32px 80px' }}>
         <div className="plp-grid">
 
           {/* Desktop Filters sidebar */}

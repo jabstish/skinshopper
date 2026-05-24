@@ -31,9 +31,24 @@ const META = {
   },
 };
 
+const CATEGORY_DESCRIPTIONS = {
+  parfum: 'Koop authentieke designer parfums tot 35% onder de adviesprijs. Hugo Boss, Gucci, Calvin Klein en meer — 100% origineel, snelle levering.',
+  huidverzorging: 'Premium huidverzorging van La Roche-Posay, Vichy en SkinCeuticals. Dermatologisch getest, door experts samengesteld. Gratis verzending vanaf €60.',
+  zonbescherming: 'Effectieve zonbescherming met SPF30 tot SPF50+ voor gezicht en lichaam. Originele producten van Lancaster, La Roche-Posay en meer.',
+  sale: 'Tot 35% korting op parfum en huidverzorging — zolang de voorraad strekt. Originele producten van topmerken voor de beste prijs.',
+};
+
 export async function generateMetadata({ params }) {
   const m = META[params.category];
-  return { title: `${m?.title ?? 'Producten'} — SkinShopper` };
+  const title = m?.title ?? 'Producten';
+  return {
+    title: `${title} kopen — SKINSHOPPER`,
+    description: CATEGORY_DESCRIPTIONS[params.category] ?? `Ontdek ons aanbod ${title.toLowerCase()} — 100% origineel, scherpe prijzen, snelle levering.`,
+    openGraph: {
+      title: `${title} — SKINSHOPPER`,
+      description: CATEGORY_DESCRIPTIONS[params.category],
+    },
+  };
 }
 
 async function fetchCollectionProducts(handle) {
