@@ -1,5 +1,6 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { trackShopify } from '@/lib/analytics';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
@@ -30,6 +31,22 @@ export default function PDPClient({ product, allImages, variants, description, b
   const [wishlisted, setWishlisted] = useState(false);
   const [addedFeedback, setAddedFeedback] = useState(false);
   const [idealLoading, setIdealLoading] = useState(false);
+
+  // Product view tracking
+  useEffect(() => {
+    trackShopify('PRODUCT_VIEW', {
+      pageUrl: window.location.href,
+      pageTitle: document.title,
+      products: [{
+        productGid: product.id,
+        variantGid: selectedVariantId,
+        name: product.title,
+        brand: product.vendor ?? '',
+        price: String(product.price ?? '0'),
+        sku: '',
+      }],
+    });
+  }, [product.id]);
 
   async function handleDirectCheckout() {
     setIdealLoading(true);

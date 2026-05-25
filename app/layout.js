@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import MiniCart from '@/components/MiniCart';
 import Toast from '@/components/Toast';
 import WhatsAppButton from '@/components/WhatsAppButton';
+import ShopifyAnalytics from '@/components/ShopifyAnalytics';
 
 export const metadata = {
   title: 'SkinShopper — Parfum & Huidverzorging',
@@ -34,6 +35,7 @@ export default function RootLayout({ children }) {
               <MiniCart />
               <Toast />
               <WhatsAppButton />
+              <ShopifyAnalytics />
             </AccountProvider>
           </WishlistProvider>
         </CartProvider>

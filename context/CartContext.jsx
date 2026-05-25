@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { createCart, addLinesToCart, updateCartLine, removeCartLines, fetchCart, formatPrice } from '@/lib/shopify';
+import { trackShopify } from '@/lib/analytics';
 
 const CartContext = createContext(null);
 
@@ -46,6 +47,21 @@ export function CartProvider({ children }) {
       saveCart(updated);
       showToast(`✓ ${title.slice(0, 40)}${title.length > 40 ? '…' : ''} toegevoegd`);
       setTimeout(() => setCartOpen(true), 300);
+
+      // Add to cart analytics
+      trackShopify('ADD_TO_CART', {
+        pageUrl: window.location.href,
+        cartId: updated?.id,
+        products: [{
+          productGid: variantId,
+          variantGid: variantId,
+          name: title,
+          brand: '',
+          price: '0',
+          sku: '',
+          quantity: qty,
+        }],
+      });
     } finally {
       setLoading(false);
     }

@@ -2,6 +2,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import ProductCard from '@/components/ProductCard';
 import { formatPrice } from '@/lib/shopify';
+import { trackShopify } from '@/lib/analytics';
 
 const SCENT_FAMILIES = {
   'Fris': ['fresh', 'aqua', 'sea', 'blue', 'water', 'crystalle', 'ck one', 'ck everyone', 'in motion'],
@@ -89,6 +90,15 @@ export default function PLPClient({ category, title, sub, initialProducts }) {
     const h = document.querySelector('header')?.offsetHeight ?? 0;
     setHeaderH(h);
   }, []);
+
+  // Collection view tracking
+  useEffect(() => {
+    trackShopify('COLLECTION_VIEW', {
+      pageUrl: window.location.href,
+      pageTitle: document.title,
+      collectionHandle: category,
+    });
+  }, [category]);
 
   const FilterSidebar = () => (
     <>
