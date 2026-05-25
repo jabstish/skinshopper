@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
@@ -26,6 +26,7 @@ export default function PDPClient({ product, allImages, variants, description, b
   const [qty, setQty] = useState(1);
   const [selectedVariantId, setSelectedVariantId] = useState(product.variantId);
   const [openAccordion, setOpenAccordion] = useState('description');
+  const accordionRefs = useRef({});
   const [wishlisted, setWishlisted] = useState(false);
   const [addedFeedback, setAddedFeedback] = useState(false);
   const [idealLoading, setIdealLoading] = useState(false);
@@ -330,30 +331,46 @@ export default function PDPClient({ product, allImages, variants, description, b
 
             {/* Accordion */}
             <div style={{ borderTop: '1px solid var(--border)' }}>
-              {accordionItems.map((item) => (
-                <div key={item.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                  <button
-                    onClick={() => setOpenAccordion((o) => o === item.id ? null : item.id)}
-                    style={{
-                      width: '100%', padding: '18px 0',
-                      background: 'none', border: 0,
-                      fontSize: 14, fontWeight: 500,
-                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                      cursor: 'pointer', color: 'var(--ink)',
+              {accordionItems.map((item) => {
+                const isOpen = openAccordion === item.id;
+                return (
+                  <div key={item.id} ref={(el) => { if (el) accordionRefs.current[item.id] = el; }} style={{ borderBottom: '1px solid var(--border)' }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const opening = openAccordion !== item.id;
+                        setOpenAccordion((o) => o === item.id ? null : item.id);
+                        if (opening) {
+                          setTimeout(() => {
+                            accordionRefs.current[item.id]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                          }, 50);
+                        }
+                      }}
+                      style={{
+                        width: '100%', padding: '18px 0',
+                        background: 'none', border: 0,
+                        fontSize: 14, fontWeight: 500,
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                        cursor: 'pointer', color: 'var(--ink)',
+                      }}>
+                      {item.label}
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"
+                        style={{ transform: isOpen ? 'rotate(45deg)' : 'none', transition: 'transform .2s', flexShrink: 0 }}>
+                        <path d="M8 3v10M3 8h10" strokeLinecap="round" />
+                      </svg>
+                    </button>
+                    <div style={{
+                      overflow: 'hidden',
+                      maxHeight: isOpen ? 600 : 0,
+                      transition: 'max-height 0.3s ease',
                     }}>
-                    {item.label}
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"
-                      style={{ transform: openAccordion === item.id ? 'rotate(45deg)' : 'none', transition: 'transform .2s', flexShrink: 0 }}>
-                      <path d="M8 3v10M3 8h10" strokeLinecap="round" />
-                    </svg>
-                  </button>
-                  {openAccordion === item.id && (
-                    <div style={{ padding: '0 0 20px', fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.65 }}>
-                      {item.content}
+                      <div style={{ padding: '0 0 20px', fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.65 }}>
+                        {item.content}
+                      </div>
                     </div>
-                  )}
-                </div>
-              ))}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
