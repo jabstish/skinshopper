@@ -21,7 +21,7 @@ const REVIEW_DIST = [
   { stars: 1, pct: 1 },
 ];
 
-export default function PDPClient({ product, allImages, variants, description, brandHandle, relatedProducts }) {
+export default function PDPClient({ product, allImages, variants, description, brandHandle, category, relatedProducts }) {
   const [activeImg, setActiveImg] = useState(0);
   const [qty, setQty] = useState(1);
   const [selectedVariantId, setSelectedVariantId] = useState(product.variantId);
@@ -69,8 +69,13 @@ export default function PDPClient({ product, allImages, variants, description, b
     },
     {
       id: 'ingredients',
-      label: 'Ingrediënten & formule',
-      content: (
+      label: category === 'parfum' ? 'Geurprofiel' : 'Ingrediënten & formule',
+      content: category === 'parfum' ? (
+        <p style={{ lineHeight: 1.7 }}>
+          Een unieke compositie van topnoten, hartnoten en basisnoten, vakkundig samengesteld door ervaren parfumeurs.
+          100% authentiek — direct van de officiële distributeur.
+        </p>
+      ) : (
         <p style={{ lineHeight: 1.7 }}>
           Actief geformuleerd met dermatologisch geteste ingrediënten. Klinisch bewezen voor zichtbaar resultaat op alle huidtypes.
           Vrij van overbodige toevoegingen — alleen wat werkt.
@@ -80,7 +85,14 @@ export default function PDPClient({ product, allImages, variants, description, b
     {
       id: 'usage',
       label: 'Hoe te gebruiken',
-      content: (
+      content: category === 'parfum' ? (
+        <ol style={{ paddingLeft: 18, margin: 0, lineHeight: 1.8 }}>
+          <li>Spray vanuit 15–20 cm afstand op de huid.</li>
+          <li>Breng aan op pulsplekken: polsen, hals en achter de oren.</li>
+          <li>Niet inwrijven — laat de geur van nature opdrogen.</li>
+          <li>Bewaar op een koele, droge plek uit direct zonlicht.</li>
+        </ol>
+      ) : (
         <ol style={{ paddingLeft: 18, margin: 0, lineHeight: 1.8 }}>
           <li>Reinig je huid grondig met een milde reiniger.</li>
           <li>Breng een kleine hoeveelheid aan op gezicht en hals.</li>

@@ -77,6 +77,7 @@ export default async function ProductPage({ params }) {
         variants={variants}
         description={raw.description}
         brandHandle={brandHandle}
+        category={categoryHandle}
         relatedProducts={relatedProducts}
       />
     </div>
