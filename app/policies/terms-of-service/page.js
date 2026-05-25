@@ -15,7 +15,8 @@ export default function TermsOfService() {
       <h2>2. Bedrijfsgegevens</h2>
       <p>
         <strong>SKINSHOPPER</strong><br />
-        <strong>E-mail:</strong> cosmax@hotmail.com
+        <strong>E-mail:</strong> info@skinshopper.nl<br />
+        <strong>Telefoon / WhatsApp:</strong> +31 85 060 2645
       </p>
 
       <h2>3. Aanbod en producten</h2>
@@ -47,7 +48,7 @@ export default function TermsOfService() {
       <p>Wij zijn niet aansprakelijk voor indirecte schade of schade als gevolg van verkeerd gebruik van producten. Onze aansprakelijkheid is in alle gevallen beperkt tot het bedrag van de betreffende bestelling.</p>
 
       <h2>12. Klachten</h2>
-      <p>Klachten kunnen worden ingediend via onze klantenservice via cosmax@hotmail.com. Wij streven ernaar om binnen <strong>2–5 werkdagen</strong> te reageren.</p>
+      <p>Klachten kunnen worden ingediend via onze klantenservice via info@skinshopper.nl of telefonisch op +31 85 060 2645. Wij streven ernaar om binnen <strong>2–5 werkdagen</strong> te reageren.</p>
 
       <h2>13. Intellectueel eigendom</h2>
       <p>Alle content op onze webshop (tekst, afbeeldingen, logo's, ontwerp) is eigendom van SKINSHOPPER en mag niet zonder voorafgaande schriftelijke toestemming worden gebruikt, gekopieerd of verspreid.</p>

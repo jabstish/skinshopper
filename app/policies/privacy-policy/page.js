@@ -80,7 +80,8 @@ export default function PrivacyPolicy() {
       <h2>Contact</h2>
       <p>Mocht je vragen hebben over onze privacypraktijken of dit privacybeleid, neem dan contact met ons op:</p>
       <p>
-        <strong>E-mail:</strong> cosmax@hotmail.com
+        <strong>E-mail:</strong> info@skinshopper.nl<br />
+        <strong>Telefoon / WhatsApp:</strong> +31 85 060 2645
       </p>
 
     </PolicyLayout>

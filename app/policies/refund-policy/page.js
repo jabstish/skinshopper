@@ -29,7 +29,7 @@ export default function RefundPolicy() {
 
       <h2>Retour aanmelden</h2>
       <p>Om een retour aan te melden, neem je contact op met onze klantenservice via e-mail. Vermeld je naam, ordernummer en (optioneel) de reden voor retour. Je ontvangt dan verdere instructies.</p>
-      <p><strong>E-mail:</strong> cosmax@hotmail.com</p>
+      <p><strong>E-mail:</strong> info@skinshopper.nl<br /><strong>Telefoon / WhatsApp:</strong> +31 85 060 2645</p>
 
       <h2>Retourkosten</h2>
       <p>De kosten voor retourzending zijn voor eigen rekening, tenzij het product beschadigd of verkeerd geleverd is. In dat geval vergoeden wij de retourkosten.</p>
@@ -43,7 +43,8 @@ export default function RefundPolicy() {
       <h2>Contact</h2>
       <p>Heb je vragen over je retour? Neem contact met ons op:</p>
       <p>
-        <strong>E-mail:</strong> cosmax@hotmail.com
+        <strong>E-mail:</strong> info@skinshopper.nl<br />
+        <strong>Telefoon / WhatsApp:</strong> +31 85 060 2645
       </p>
 
     </PolicyLayout>

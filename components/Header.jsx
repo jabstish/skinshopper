@@ -225,7 +225,7 @@ export default function Header() {
         {/* Left */}
         <div className="row" style={{ gap: 16 }}>
           <button className="show-mobile" aria-label="Menu" onClick={() => setMobileOpen(true)}
-            style={{ background: 'none', border: 0, padding: 4, cursor: 'pointer', display: 'none' }}>
+            style={{ background: 'none', border: 0, padding: 4, cursor: 'pointer', display: 'none', color: 'var(--ink)', WebkitAppearance: 'none' }}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
               <path d="M3 6h18M3 12h18M3 18h18" />
             </svg>
@@ -475,7 +475,7 @@ export default function Header() {
           <aside style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 'min(420px, 92vw)', background: 'var(--bg)', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 20px', borderBottom: '1px solid var(--border)' }}>
               <div style={{ fontWeight: 900, fontSize: 18, letterSpacing: '0.04em' }}>SKINSHOPPER</div>
-              <button onClick={() => { setMobileOpen(false); setMobileExpanded(null); }} style={{ background: 'none', border: 0, cursor: 'pointer', padding: 4 }}>
+              <button onClick={() => { setMobileOpen(false); setMobileExpanded(null); }} style={{ background: 'none', border: 0, cursor: 'pointer', padding: 4, color: 'var(--ink)', WebkitAppearance: 'none' }}>
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="m4 4 14 14m0-14L4 18" strokeLinecap="round" /></svg>
               </button>
             </div>

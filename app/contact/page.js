@@ -33,8 +33,15 @@ export default function ContactPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
             <div>
               <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 6, letterSpacing: '0.04em', textTransform: 'uppercase' }}>E-mail</div>
-              <a href="mailto:cosmax@hotmail.com" style={{ fontSize: 15, color: 'var(--ink-2)', textDecoration: 'none' }}>
-                cosmax@hotmail.com
+              <a href="mailto:info@skinshopper.nl" style={{ fontSize: 15, color: 'var(--ink-2)', textDecoration: 'none' }}>
+                info@skinshopper.nl
+              </a>
+            </div>
+
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 6, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Telefoon / WhatsApp</div>
+              <a href="tel:+31850602645" style={{ fontSize: 15, color: 'var(--ink-2)', textDecoration: 'none' }}>
+                +31 85 060 2645
               </a>
             </div>
 

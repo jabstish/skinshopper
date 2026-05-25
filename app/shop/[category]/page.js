@@ -81,9 +81,10 @@ export default async function ShopPage({ params }) {
     }
 
     // Merge: always add products from extra collections (e.g. Gucci into Parfum)
+    // mergeCollections komen vooraan te staan
     if (meta.mergeCollections?.length) {
       const extras = await Promise.all(meta.mergeCollections.map(fetchCollectionProducts));
-      rawProducts = dedupeById([...rawProducts, ...extras.flat()]);
+      rawProducts = dedupeById([...extras.flat(), ...rawProducts]);
     }
   } else {
     // Sale: fetch all products with a compare-at price

@@ -116,7 +116,7 @@ export default function ContactForm() {
 
       {status === 'error' && (
         <p style={{ fontSize: 13, color: 'var(--sale)', margin: 0 }}>
-          Er is iets misgegaan. Stuur ons een e-mail op cosmax@hotmail.com.
+          Er is iets misgegaan. Stuur ons een e-mail op info@skinshopper.nl of bel +31 85 060 2645.
         </p>
       )}
 

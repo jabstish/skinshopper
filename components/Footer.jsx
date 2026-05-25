@@ -22,9 +22,17 @@ export default function Footer() {
         <div className="footer-links-grid">
           <div>
             <div style={{ fontFamily: 'var(--font-body)', fontWeight: 900, fontSize: 22, color: 'white', letterSpacing: '0.04em', marginBottom: 12 }}>SKINSHOPPER</div>
-            <p style={{ fontSize: 13, lineHeight: 1.6, maxWidth: 320 }}>
+            <p style={{ fontSize: 13, lineHeight: 1.6, maxWidth: 320, marginBottom: 16 }}>
               Premium parfum en huidverzorging van de merken die je kent. Slimme prijzen, eerlijke uitverkoop, snelle levering.
             </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <a href="mailto:info@skinshopper.nl" style={{ fontSize: 13, color: '#c7c1b5', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ opacity: 0.5 }}>✉</span> info@skinshopper.nl
+              </a>
+              <a href="tel:+31850602645" style={{ fontSize: 13, color: '#c7c1b5', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ opacity: 0.5 }}>📞</span> +31 85 060 2645
+              </a>
+            </div>
           </div>
 
           {[

@@ -34,7 +34,8 @@ export default function ShippingPolicy() {
       <h2>Contact</h2>
       <p>Heb je vragen over je bestelling of verzending? Neem contact met ons op:</p>
       <p>
-        <strong>E-mail:</strong> cosmax@hotmail.com
+        <strong>E-mail:</strong> info@skinshopper.nl<br />
+        <strong>Telefoon / WhatsApp:</strong> +31 85 060 2645
       </p>
 
     </PolicyLayout>
