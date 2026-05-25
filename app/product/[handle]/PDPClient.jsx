@@ -212,7 +212,7 @@ export default function PDPClient({ product, allImages, variants, description, b
 
             {/* Stock status pill */}
             <div style={{
-              display: 'flex', alignItems: 'flex-start', gap: 8,
+              display: 'flex', alignItems: 'center', gap: 8,
               padding: '12px 14px',
               background: product.stock <= 5 ? 'var(--sale-bg)' : 'var(--success-bg)',
               marginBottom: 24, fontSize: 13,
