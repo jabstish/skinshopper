@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer style={{ background: 'var(--ink)', color: '#c7c1b5', marginTop: 80 }}>
+    <footer style={{ background: 'var(--ink)', color: '#c7c1b5' }}>
       <div className="container-wide" style={{ padding: '80px 32px 32px' }}>
         {/* USP strip */}
         <div className="footer-usp-grid" style={{ paddingBottom: 56, borderBottom: '1px solid #2a2622', marginBottom: 56 }}>
