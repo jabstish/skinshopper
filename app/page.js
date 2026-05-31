@@ -65,51 +65,83 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero */}
-      <section style={{ position: 'relative', background: 'var(--bg-sunken)', overflow: 'hidden' }}>
-        <div className="hero-split" style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', minHeight: 'min(720px, 78vh)' }}>
-          <div className="hero-text">
-            <div className="eyebrow" style={{ marginBottom: 24 }}>Lente collectie · 2026</div>
-            <h1 className="hero-h1" style={{ lineHeight: 0.95, marginBottom: 28, letterSpacing: '-0.02em' }}>
-              Skincare met<br />
-              <em style={{ fontStyle: 'italic', color: 'var(--accent-deep)' }}>kennis</em>,<br />
-              geuren met<br />
-              <em style={{ fontStyle: 'italic', color: 'var(--accent-deep)' }}>karakter</em>.
-            </h1>
-            <p style={{ fontSize: 17, lineHeight: 1.55, color: 'var(--ink-3)', maxWidth: 440, marginBottom: 28 }}>
-              Authentieke producten van de merken die je vertrouwt — La Roche-Posay, Vichy, SkinCeuticals, Hugo Boss.
-            </p>
-
-            {/* Sale badge */}
-            <Link href="/shop/sale" className="hero-sale-badge" style={{ textDecoration: 'none', marginBottom: 28 }}>
-              <span style={{ fontSize: 18 }}>🔥</span>
-              <span>Tot 35% korting deze week</span>
-              <span style={{ opacity: 0.75, fontWeight: 400 }}>→ Bekijk sale</span>
-            </Link>
-
-            <div className="row" style={{ gap: 12, flexWrap: 'wrap' }}>
-              <Link href="/shop/huidverzorging" className="btn btn-lg">Shop huidverzorging</Link>
-              <Link href="/shop/parfum" className="btn btn-lg btn-outline">Shop parfum</Link>
-            </div>
-            <div className="row" style={{ gap: 24, marginTop: 56, color: 'var(--ink-3)', fontSize: 12, flexWrap: 'wrap' }}>
-              <div className="row-tight" style={{ gap: 8 }}>
-                <div className="stars">★★★★★</div>
-                <span><strong style={{ color: 'var(--ink)' }}>4.8</strong> · 1.247 reviews</span>
+      {/* Hero — 3-grid editorial */}
+      <section className="hero-section" style={{ background: 'var(--bg)', padding: '36px 0 8px' }}>
+        <div className="container-wide">
+          <div className="hero-head">
+            <div>
+              <div className="row-tight" style={{ gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
+                <span className="badge badge-sale" style={{ fontSize: 11, padding: '5px 10px', letterSpacing: '0.08em' }}>De grote lente sale</span>
+                <span className="eyebrow" style={{ color: 'var(--sale)' }}>Tot −35% · op = op</span>
               </div>
-              <div>Trustpilot · ★ 4.7</div>
+              <h1 className="hero-h1" style={{ lineHeight: 0.98, letterSpacing: '-0.02em' }}>
+                Alles in de <em style={{ fontStyle: 'italic', color: 'var(--sale)' }}>uitverkoop</em>
+              </h1>
+            </div>
+            <p className="hero-head-p">
+              Originele parfums en huidverzorging van topmerken — nu tot <strong>35% goedkoper</strong> dan de adviesprijs. La Roche-Posay, Hugo Boss, Vichy, SkinCeuticals en meer. <strong>Gratis verzending vanaf €60</strong>, vandaag besteld = morgen in huis.
+            </p>
+          </div>
+
+          <div className="hero-deal-grid">
+            <div className="hero-deal-left">
+              <Link href="/shop/parfum" className="hero-tile"
+                style={{ '--hero-img': 'url("https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?fm=jpg&q=80&w=1400&auto=format&fit=crop")', '--hero-overlay': 'linear-gradient(180deg, rgba(20,8,4,0) 30%, rgba(20,8,4,0.78) 100%)', '--hero-focus': 'center 35%' }}>
+                <div className="hero-tile-media" />
+                <div className="hero-tile-deal">−35%</div>
+                <div className="hero-tile-body">
+                  <div className="hero-tile-kicker">Parfum · designer geuren</div>
+                  <div className="hero-tile-title">Parfums</div>
+                  <div className="hero-tile-sub">Hugo Boss, Calvin Klein &amp; meer — tot 35% onder adviesprijs</div>
+                  <span className="hero-tile-cta">Shop parfum
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 8h10M9 4l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  </span>
+                </div>
+              </Link>
+            </div>
+            <div className="hero-deal-tr">
+              <Link href="/shop/huidverzorging" className="hero-tile"
+                style={{ '--hero-img': 'url("https://images.unsplash.com/photo-1531895861208-8504b98fe814?fm=jpg&q=80&w=1400&auto=format&fit=crop")', '--hero-overlay': 'linear-gradient(110deg, rgba(20,8,20,0.55) 0%, rgba(20,8,20,0.05) 55%)', '--hero-focus': 'center 40%' }}>
+                <div className="hero-tile-media" />
+                <div className="hero-tile-deal">−30%</div>
+                <div className="hero-tile-body">
+                  <div className="hero-tile-kicker">Huidverzorging · dermatologisch</div>
+                  <div className="hero-tile-title">Huid</div>
+                  <span className="hero-tile-cta">Shop nu
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 8h10M9 4l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  </span>
+                </div>
+              </Link>
+            </div>
+            <div className="hero-deal-br">
+              <Link href="/shop/zonnebrand-creme" className="hero-tile"
+                style={{ '--hero-img': 'url("https://images.unsplash.com/photo-1505944270255-72b8c68c6a70?fm=jpg&q=80&w=1400&auto=format&fit=crop")', '--hero-overlay': 'linear-gradient(110deg, rgba(60,24,4,0.6) 0%, rgba(60,24,4,0.05) 55%)', '--hero-focus': 'center 40%' }}>
+                <div className="hero-tile-media" />
+                <div className="hero-tile-deal">−25%</div>
+                <div className="hero-tile-body">
+                  <div className="hero-tile-kicker">Zonbescherming · klaar voor de zomer</div>
+                  <div className="hero-tile-title">Zon &amp; zomer</div>
+                  <span className="hero-tile-cta">Shop nu
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 8h10M9 4l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  </span>
+                </div>
+              </Link>
             </div>
           </div>
 
-          <div className="hero-panel-right" style={{ position: 'relative', overflow: 'hidden', minHeight: 400 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://images.pexels.com/photos/19170038/pexels-photo-19170038.jpeg?auto=compress&cs=tinysrgb&w=1200&h=900&fit=crop"
-              alt="Gucci Bloom parfum"
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-            />
-            <Link href="/shop/sale" style={{ position: 'absolute', bottom: 32, right: 32, padding: '12px 20px', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(6px)', textDecoration: 'none', color: 'inherit' }}>
-              <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--sale)' }}>Sale · Bekijk alle aanbiedingen →</div>
-            </Link>
+          <div className="hero-trust">
+            <div className="row-tight" style={{ gap: 8 }}>
+              <div className="stars">★★★★★</div>
+              <span><strong style={{ color: 'var(--ink)' }}>4.8</strong> · 1.247 reviews</span>
+            </div>
+            <span className="hero-trust-dot">·</span>
+            <span>★ Trustpilot 4.7</span>
+            <span className="hero-trust-dot">·</span>
+            <span>✓ 100% origineel</span>
+            <span className="hero-trust-dot">·</span>
+            <span>🚚 Gratis verzending vanaf €60</span>
+            <span className="hero-trust-dot">·</span>
+            <span>↩ 30 dagen retour</span>
           </div>
         </div>
       </section>
